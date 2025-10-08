@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../context/CartContext';
 
 const SinglProduct = () => {
   const { id } = useParams();

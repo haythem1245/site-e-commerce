@@ -9,7 +9,7 @@ import Boutique from './pages/Boutique';
 import SinglProduct from './pages/SinglProduct';
 import Cart from './pages/Cart';
 import Contact from './pages/Contact';
-import { useCart } from '../context/CartContext';
+import { useCart } from './context/CartContext';
 import { useEffect } from 'react';
 function App() {
     const { cartItems, setCartItems } = useCart()
