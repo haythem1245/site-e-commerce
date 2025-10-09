@@ -1,10 +1,11 @@
 const express = require('express');
 const verifToken = require('../middlewares/verifToken');
+const verifRole = require('../middlewares/verifRole');
 const router = express.Router();
 const userController = require('../controllers/userController');
-router.post('/signup',verifToken,userController.signup);
+router.post('/signup',userController.signup);
 router.post('/login',userController.login);
-router.get('/profile',userController.getProfile);
-router.get('/profiles',userController.getAllProfile);
+router.get('/profile/:id',userController.getProfile);
+router.get('/profiles',verifToken,verifRole("admin"),userController.getAllProfile);
 router.put('/profile',userController.updateProfile);
 module.exports = router;

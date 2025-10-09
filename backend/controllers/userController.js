@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // Inscription (signup)
 const signup = async (req, res) => {
     try {
-        const { name, email, password } = req.body;
+        const { name, email, password,role,address,phone } = req.body;
 
         // Vérifier si l'utilisateur existe déjà
         const existingUser = await User.findOne({ email });
@@ -17,7 +17,7 @@ const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Créer un nouvel utilisateur
-        const user = new User({ name, email, password: hashedPassword });
+        const user = new User({ name, email, password: hashedPassword ,role,address,phone });
         await user.save();
 
         res.status(201).json({ message: "Utilisateur créé avec succès" });
@@ -45,7 +45,8 @@ const login = async (req, res) => {
 
         // Générer un token JWT
         const token = jwt.sign(
-            { id: user._id, role: user.role },
+            { id: user._id,
+            role: user.role },
             process.env.JWT_SECRET,
             { expiresIn: "1h" }
         );
@@ -53,7 +54,7 @@ const login = async (req, res) => {
         res.status(200).json({
             message: "Connexion réussie",
             token,
-            user: { id: user._id, name: user.name, email: user.email, role: user.role }
+            user: { id: user._id, name: user.name, email: user.email, role: user.role}
         });
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
@@ -65,24 +66,26 @@ const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id).select("-password");
         res.json(user);
+         console.log(users);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+// Récupérer tous les profils (admin seulement)
 const getAllProfile = async (req, res) => {
     try {
-        const { role } = req.query; 
-
-        let query = {};
-        if (role) {
-            query.role = role; 
-        }
-        const users = await User.find(query);
+        // if (req.user.role !== "admin") {
+        //     return res.status(403).json({ message: "Accès refusé. Seuls les admins peuvent voir la liste des profils." });
+        // }
+    
+        const users = await User.find();
         res.json(users);
+        console.log(users);
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
 // Mettre à jour le profil utilisateur
 
 const updateProfile = async (req, res) => {
