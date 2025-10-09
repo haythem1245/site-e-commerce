@@ -1,4 +1,4 @@
-const User = require('./models/User');
+const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
@@ -69,17 +69,31 @@ const getProfile = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+const getAllProfile = async (req, res) => {
+    try {
+        const { role } = req.query; 
+
+        let query = {};
+        if (role) {
+            query.role = role; 
+        }
+        const users = await User.find(query);
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: "Erreur serveur", error: error.message });
+    }
+};
 // Mettre à jour le profil utilisateur
 
 const updateProfile = async (req, res) => {
     try {
-        const { name, email, password, role, phone, address, city, country, postalCode } = req.body;
+        const { name, email, password, phone, address, city, country, postalCode } = req.body;
 
         const user = await User.findByIdAndUpdate(
             req.user.id,
-            { name, email, password, role, phone, address, city, country, postalCode },
+            { name, email, password, phone, address, city, country, postalCode },
             { new: true, runValidators: true } 
-        ).select("name email role phone address city country postalCode");
+        ).select("name email phone address city country postalCode");
 
         if (!user) {
             return res.status(404).json({ message: "Utilisateur non trouvé" });
@@ -91,6 +105,6 @@ const updateProfile = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, getProfile, updateProfile };
+module.exports = { signup, login, getProfile, updateProfile ,getAllProfile};
 
 

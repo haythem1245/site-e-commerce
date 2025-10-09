@@ -1,8 +1,10 @@
 const express = require('express');
+const verifToken = require('../middlewares/verifToken');
 const router = express.Router();
-const { signup, login, getProfile ,updateProfile} = require('../controllers/userController');
-router.post('/signup', signup);
-router.post('/login', login);
-router.get('/profile', getProfile);
-router.put('/profile', updateProfile);
+const userController = require('../controllers/userController');
+router.post('/signup',verifToken,userController.signup);
+router.post('/login',userController.login);
+router.get('/profile',userController.getProfile);
+router.get('/profiles',userController.getAllProfile);
+router.put('/profile',userController.updateProfile);
 module.exports = router;

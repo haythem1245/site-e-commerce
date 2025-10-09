@@ -11,6 +11,6 @@ const userSchema = new mongoose.Schema({
     country:String,
     postalCode:String,});
 
-const User = mongoose.model('Product', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
