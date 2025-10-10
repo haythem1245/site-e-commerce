@@ -4,12 +4,13 @@ const connectDB = require('./config/db');
 const cors = require('cors');
 const app = express();
 const userRoutes = require('./routes/userRoute');
-
+const productRoutes = require('./routes/productRoute');
 connectDB();
 
 app.use(cors());
 app.use(express.json());
 app.use('/api/v0', userRoutes);
+app.use('/api/v1', productRoutes);
 
 const PORT = 5000;
 app.listen(PORT, () => {

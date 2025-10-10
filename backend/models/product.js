@@ -27,6 +27,9 @@ const productSchema = new mongoose.Schema({
         required: [true, "Please select category for this product"],
         enum: {
             values: [
+                "men",
+                "female",
+                "kids",
                 "Eid Collection",
                 "New Collection",
                 "Featured",
@@ -54,8 +57,8 @@ const productSchema = new mongoose.Schema({
         default : false
     },
    
-   
-   Timesnamp: true,
-});
+ 
+}
+, { timestamps: true});
 
 module.exports = mongoose.model("Product", productSchema);

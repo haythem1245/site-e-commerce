@@ -3,8 +3,10 @@ const verifToken = require('../middlewares/verifToken');
 const verifRole = require('../middlewares/verifRole');
 const router = express.Router();
 const productController = require('../controllers/productController');
-
+router.post('/product',productController.ajoutProduct);
+router.get('/products/:category',productController.getProductByCategirie);
 router.get('/product/:id',productController.getProductById);
 router.get('/products',verifToken,verifRole("admin"),productController.getAllProducts);
-router.put('/product',productController.updateProducts);
+router.put('/product/:id',productController.updateProducts);
+router.delete('/product/:id',productController.DeletProducts);
 module.exports = router;
