@@ -11,6 +11,10 @@ import Cart from './pages/Cart';
 import Contact from './pages/Contact';
 import { useCart } from './context/CartContext';
 import { useEffect } from 'react';
+import NotFound from './pages/NotFound';
+import Profile from './pages/Profile';
+import About from './pages/About';
+import Checkout from './pages/Checkout';
 function App() {
     const { cartItems, setCartItems } = useCart()
  useEffect(() => {
@@ -36,7 +40,10 @@ function App() {
         <Route path="/Products/:id" element={<SinglProduct />} /> 
          <Route path='/cart' element={<Cart/>}> </Route>
          <Route path='/contact' element={<Contact/>}></Route>
-
+         <Route path="/*" element={<NotFound/>} />
+         <Route path="/profile" element={<Profile/>} />
+       <Route path='/about' element={<About/>}></Route> 
+      <Route path='/checkout' element={<Checkout/>}></Route>
      </Routes>
      <Footer/>
     </>

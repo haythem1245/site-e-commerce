@@ -1,26 +1,37 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useContext } from "react"; // 🔹 ajouter useContext
+import { Link, useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAuth } from "../../context/AuthProvider"; // 🔹 importer ton AuthContext
 
-const Login= () => {
+const Login = () => {
+  const { login } = useAuth();
   const [form, setForm] = useState({
     email: "",
     password: "",
   });
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Ici tu peux gérer la soumission, par exemple appeler ton API
-    console.log("Login data:", form);
+    try {
+      await login(form.email, form.password); // 🔹 utilise la fonction login du AuthProvider
+      toast.success("Connexion réussie !");
+      navigate("/"); // redirection après login
+    } catch (err) {
+      toast.error("Email ou mot de passe incorrect");
+    }
   };
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 relative">
-      {/* Background image */}
+      {/* Image de fond */}
       <div className="absolute inset-0">
         <img
           src="https://png.pngtree.com/background/20230614/original/pngtree-ecommerce-website-with-shopping-cart-with-the-shopping-cart-on-a-picture-image_3515047.jpg"
@@ -33,19 +44,16 @@ const Login= () => {
       <div className="relative bg-white p-8 rounded-xl shadow-lg w-full max-w-md z-10">
         {/* Logo */}
         <div className="flex justify-center mb-4">
-          <span className="text-blue-600 font-bold text-2xl"><div className="flex justify-center mb-4">
-            <Link to="/">
-  <span className="text-2xl font-bold">
-    <span className="text-black">Shop</span>
-    <span className="text-red-600">Man</span>
-  </span>
-  </Link>
-</div>
-</span>
+          <Link to="/">
+            <span className="text-2xl font-bold">
+              <span className="text-black">Shop</span>
+              <span className="text-red-600">Man</span>
+            </span>
+          </Link>
         </div>
 
         <h1 className="text-2xl font-bold text-center mb-6">
-          login To your Account
+          Login To Your Account
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -76,6 +84,7 @@ const Login= () => {
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
           {/* Bouton */}
           <button
             type="submit"
@@ -85,14 +94,16 @@ const Login= () => {
           </button>
         </form>
 
-        {/* Lien Login */}
+        {/* Lien Sign up */}
         <p className="text-center text-sm mt-4">
-          Don't have an account yet ?{" "}
+          Don't have an account yet?{" "}
           <Link to="/signup" className="text-blue-600 hover:underline">
-            Login here
+            Create one here
           </Link>
         </p>
       </div>
+
+      <ToastContainer position="top-right" autoClose={3000} />
     </div>
   );
 };

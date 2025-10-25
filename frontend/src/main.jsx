@@ -6,13 +6,19 @@ import './index.css';
 
 import App from './App';
 import { CartProvider } from './context/CartContext';
+import { AuthProvider } from './context/AuthProvider';
+import { DataProvider } from './context/DataContext';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
+<DataProvider>
+  <AuthProvider>
    <CartProvider>
       <BrowserRouter>
     <App />
   </BrowserRouter>
   </CartProvider>
+  </AuthProvider>
+  </DataProvider>
 );
 
 

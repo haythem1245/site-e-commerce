@@ -1,10 +1,13 @@
 import React, { useContext, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import { useAuth } from '../context/AuthProvider';
 
 const Cart = () => {
-  const { cartItems, deleteItem, updateQuantity, user, location } = useContext(CartContext);
+  const { cartItems, deleteItem, updateQuantity} = useContext(CartContext);
+  const {user} = useAuth();
   const [voucherCode, setVoucherCode] = useState('');
+  const navigate =useNavigate();
 
   // Calcul des prix
   const calculateSubtotal = () => cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
@@ -116,7 +119,15 @@ const Cart = () => {
                 </div>
 
                 <div className="mt-6 space-y-4">
-                  <button className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-semibold">
+                  <button  
+                  onClick={()=> {
+                    if(!user){
+                     navigate('/signin')
+                    }else {
+                      navigate('/checkout')
+                    }
+                  }}
+                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-semibold">
                     Proceed to Checkout
                   </button>
                   <Link to="/Products">

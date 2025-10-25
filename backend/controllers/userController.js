@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 // Inscription (signup)
 const signup = async (req, res) => {
     try {
-        const { name, email, password,role,address,phone } = req.body;
+        const { name, email, password,role,address,phone,image } = req.body;
 
         // Vérifier si l'utilisateur existe déjà
         const existingUser = await User.findOne({ email });
@@ -17,7 +17,7 @@ const signup = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Créer un nouvel utilisateur
-        const user = new User({ name, email, password: hashedPassword ,role,address,phone });
+        const user = new User({ name, email, password: hashedPassword ,role,address,phone ,image});
         await user.save();
 
         res.status(201).json({ message: "Utilisateur créé avec succès" });
@@ -48,7 +48,7 @@ const login = async (req, res) => {
             { id: user._id,
             role: user.role },
             process.env.JWT_SECRET,
-            { expiresIn: "1h" }
+            { expiresIn: "1d" }
         );
 
         res.status(200).json({
@@ -56,6 +56,7 @@ const login = async (req, res) => {
             token,
             user: { id: user._id, name: user.name, email: user.email, role: user.role}
         });
+ 
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
@@ -64,13 +65,75 @@ const login = async (req, res) => {
 // Exemple route protégée
 const getProfile = async (req, res) => {
     try {
-        const user = await User.findById(req.user.id).select("-password");
+        const user = await User.findById(req.user.id);
         res.json(user);
-         console.log(users);
+         console.log(user);
+                req.user = user;
+next();
     } catch (error) {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+
+// Récupérer le profil de l'utilisateur connecté
+const getMyProfile = async (req, res) => {
+  try {
+    res.json(req.user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
+const updateMyProfile = async (req, res) => {
+  try {
+    //  Récupérer les nouvelles données envoyées par l'utilisateur
+    const { name, email, password, phone, address,image} = req.body;
+
+    //  Créer un objet avec les champs à mettre à jour
+    const updatedData = {
+      name,
+      email,
+      password,
+      phone,
+      address,
+      image,
+      
+    };
+
+    //  Si l'utilisateur veut changer son mot de passe
+    if (password) {
+      updatedData.password = await bcrypt.hash(password, 10);
+    }
+
+    //  Récupérer l'utilisateur connecté (grâce au token)
+    const userId = req.user._id; // injecté par ton middleware verifToken
+    console.log(userId);
+    
+    //  Mettre à jour son profil
+    const user = await User.findByIdAndUpdate(userId, { $set: updatedData }, { new: true });
+
+    if (!user) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    //  Retourner le nouveau profil
+    res.json({
+      message: "Profil mis à jour avec succès",
+      user,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Erreur serveur",
+      error: error.message,
+    });
+  }
+};
+
+
+
+
+
 // Récupérer tous les profils (admin seulement)
 const getAllProfile = async (req, res) => {
     try {
@@ -90,11 +153,11 @@ const getAllProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { name, email, password, phone, address, city, country, postalCode } = req.body;
+        const { name, email, password, phone, address, image,role } = req.body;
 
         const user = await User.findByIdAndUpdate(
             req.user.id,
-            { name, email, password, phone, address, city, country, postalCode },
+            { name, email, password, phone, address, image,role },
             { new: true, runValidators: true } 
         ).select("name email phone address city country postalCode");
 
@@ -108,6 +171,6 @@ const updateProfile = async (req, res) => {
     }
 };
 
-module.exports = { signup, login, getProfile, updateProfile ,getAllProfile};
+module.exports = { signup, login, getProfile, updateProfile ,getAllProfile,getMyProfile,updateMyProfile};
 
 
