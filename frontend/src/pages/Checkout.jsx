@@ -1,23 +1,25 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useCart } from "../context/CartContext";
-import { useContext } from "react";
-import { AuthProvider } from "../context/AuthProvider";
+import { useAuth } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+
 const Checkout = () => {
-  const { cartItems } = useCart();
+  const { cartItems, clearCart} = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-const user= useContext(AuthProvider);
+
   const [form, setForm] = useState({
     address: "",
     city: "",
     postalCode: "",
     country: "",
-    paymentMethod: "Carte de Crédit",
+    paymentMethod: "Credit Card", 
   });
-  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,35 +27,74 @@ const user= useContext(AuthProvider);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-//if(!user)return navigate('/signin')
+
+    if (!user) {
+      toast.warning("Veuillez vous connecter pour passer une commande.");
+      return navigate("/signin");
+    }
+
+    if (cartItems.length === 0) {
+      return toast.error("Votre panier est vide !");
+    }
+
     try {
+      const paymentMethodMap = {
+        "Carte de Crédit": "Credit Card",
+        PayPal: "PayPal",
+        "Paiement à la livraison": "Cash on Delivery",
+        "Virement Bancaire": "Cash on Delivery",
+      };
+
       const orderData = {
-        orderItems: cartItems,
+        orderItems: cartItems.map((item) => ({
+          name: item.name,
+          quantity: item.quantity,
+          image: item.image || item.images?.[0],
+          price: item.price,
+          product: item._id,
+        })),
         shippingAddress: {
           address: form.address,
           city: form.city,
           postalCode: form.postalCode,
           country: form.country,
         },
-        paymentMethod: form.paymentMethod,
-        totalPrice: total,
+        paymentMethod: paymentMethodMap[form.paymentMethod] || "Credit Card",
+        taxPrice: (total * 0.05).toFixed(2), 
+        shippingPrice: 10.0, 
+        totalPrice: total + 10.0 + total * 0.05,
       };
 
       await axios.post("http://localhost:5000/api/v2/create", orderData, {
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${user.token}`,
+        },
       });
 
-      toast.success("Commande enregistrée !");
+      toast.success("Commande enregistrée avec succès !");
+      clearCart();
+
       setForm({
         address: "",
         city: "",
         postalCode: "",
         country: "",
-        paymentMethod: "Carte de Crédit",
+        paymentMethod: "Credit Card",
       });
+
+      setTimeout(() => navigate("/orders"), 1500);
     } catch (error) {
       console.error(error);
-      toast.error("Erreur lors de l’enregistrement de la commande.");
+      if (error.response?.status === 401) {
+        toast.error("Session expirée. Veuillez vous reconnecter.");
+        navigate("/signin");
+      } else {
+        toast.error(
+          error.response?.data?.message ||
+            " Erreur lors de l’enregistrement de la commande."
+        );
+      }
     }
   };
 
@@ -65,7 +106,6 @@ const user= useContext(AuthProvider);
         <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-4">
           <h3 className="text-lg font-semibold mb-2">Détails de Facturation</h3>
 
-         
           <input
             type="text"
             name="address"
@@ -103,7 +143,9 @@ const user= useContext(AuthProvider);
             required
           />
 
-          <h3 className="text-lg font-semibold mb-2 mt-4">Options de Paiement</h3>
+          <h3 className="text-lg font-semibold mb-2 mt-4">
+            Options de Paiement
+          </h3>
           <select
             name="paymentMethod"
             value={form.paymentMethod}
@@ -112,12 +154,15 @@ const user= useContext(AuthProvider);
           >
             <option>Carte de Crédit</option>
             <option>PayPal</option>
+            <option>Paiement à la livraison</option>
             <option>Virement Bancaire</option>
           </select>
 
           <div className="flex justify-between items-center mt-4">
             <span className="font-semibold">Total</span>
-            <span className="font-bold text-gray-800">{total.toFixed(2)} TND</span>
+            <span className="font-bold text-gray-800">
+              {total.toFixed(2)} TND
+            </span>
           </div>
 
           <button

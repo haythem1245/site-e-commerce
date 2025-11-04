@@ -19,7 +19,7 @@ const productSchema = new mongoose.Schema({
     },
 
     images: {
-        type: [String],
+        type: String,
         required: [true, "Please enter product images"],
     },
     category: {
@@ -44,9 +44,22 @@ const productSchema = new mongoose.Schema({
         maxLength: [5, "Stock cannot exceed 5 digits"],
         default: 0,
     },
-    Featured :{
+    featured :{
         type : Boolean,
         default : false
+    },
+    new:{
+        type :Boolean,
+        default :false
+
+    },
+    sold:{
+        type :Number,
+        default:0
+    },
+    newSold:{
+        type : Number,
+        default :0
     },
    
  

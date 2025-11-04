@@ -9,3 +9,4 @@ const verifRole = (...requiredRole) => {
     };
 }   
 module.exports = verifRole;
+

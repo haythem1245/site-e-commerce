@@ -5,20 +5,24 @@ import "slick-carousel/slick/slick-theme.css";
 import { AiOutlineArrowLeft, AiOutlineArrowRight } from "react-icons/ai";
 import { getData } from "../context/DataContext";
 
+import { useNavigate } from "react-router-dom";
 const Carousel = () => {
   const { data, fetchAllProducts } = getData();
   const [featuredProducts, setFeaturedProducts] = useState([]);
-
+const navigate = useNavigate();
   useEffect(() => {
     fetchAllProducts(); // récupère les produits depuis le backend
   }, []);
 
   useEffect(() => {
     if (data) {
-      const featured = data.filter((product) => product.Featured);
+      console.log(data);
+      const featured = data.filter((product) => product.featured);
+      console.log(featured);
       setFeaturedProducts(featured);
     }
   }, [data]);
+
 
   const SamplePrevArrow = ({ className, style, onClick }) => (
     <div onClick={onClick} className={`arrow ${className}`} style={{ zIndex: 3 }}>
@@ -82,16 +86,17 @@ const Carousel = () => {
                 <p className="md:w-[200px] line-clamp-3 text-gray-400 pr-7">
                   {product.description}
                 </p>
-                <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+                <button onClick={()=>{
+                 navigate("/Products")
+                }} className="bg-red-500 text-white px-4 py-2 rounded-md">
                   Shop Now
                 </button>
               </div>
               <div>
-                <img
-                  src={product.images[0]}
-                  alt={product.name}
-                  className="rounded-full w-[350px] hover:scale-105 transition-all shadow-2xl shadow-red-400"
-                />
+                <img src={`http://localhost:5000/uploads/${product.images}`} alt={product.name}
+  className="rounded-full w-[350px] hover:scale-105 transition-all shadow-2xl shadow-red-400"
+/>
+
               </div>
             </div>
           </div>

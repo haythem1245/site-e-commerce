@@ -15,6 +15,9 @@ import NotFound from './pages/NotFound';
 import Profile from './pages/Profile';
 import About from './pages/About';
 import Checkout from './pages/Checkout';
+import MyOrder from './pages/MyOrder';
+
+
 function App() {
     const { cartItems, setCartItems } = useCart()
  useEffect(() => {
@@ -44,6 +47,9 @@ function App() {
          <Route path="/profile" element={<Profile/>} />
        <Route path='/about' element={<About/>}></Route> 
       <Route path='/checkout' element={<Checkout/>}></Route>
+      <Route path='/orders' element={<MyOrder/>}></Route>
+      
+     
      </Routes>
      <Footer/>
     </>

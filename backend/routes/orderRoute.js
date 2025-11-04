@@ -4,5 +4,5 @@ const verifRole = require('../middlewares/verifRole');
 const router = express.Router();
 const orderController = require('../controllers/orderController');
 router.post('/create',verifToken,orderController.createOrder);
-router.get('/',verifToken,orderController.getMyOrder);
+router.get('/',verifToken,orderController.getMyOrders);
 module.exports = router;

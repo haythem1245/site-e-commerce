@@ -1,15 +1,10 @@
 import { createContext, useState ,useContext} from "react";
-
+import { toast } from "react-toastify";
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const [user, setUser] = useState({ fullName: "John Doe" });
-  const [location, setLocation] = useState({
-    country: "USA",
-    state: "California",
-    postcode: "90001",
-  });
+
 
   const addToCart = (product) => {
     const exists = cartItems.find((item) => item.id === product.id);
@@ -36,12 +31,17 @@ export const CartProvider = ({ children }) => {
           : item
       )
     );
-    
+
+  };
+  const clearCart = () => {
+    setCartItems([]);
+    localStorage.removeItem("cartItem");
+    toast.info("Cart cleared!");
   };
 
   return (
     <CartContext.Provider
-      value={{ cartItems, setCartItems, addToCart, deleteItem, updateQuantity, user, location }}
+      value={{ cartItems, clearCart,setCartItems, addToCart, deleteItem, updateQuantity }}
     >
       {children}
     </CartContext.Provider>

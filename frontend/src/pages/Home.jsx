@@ -1,7 +1,7 @@
-import React from 'react'
-import FeaturedProducts from '../components/Featured'
-import Category from '../components/Category'
-import Carousel from '../components/carousel'
+
+import FeaturedProducts from '../components/Featured';
+import Category from '../components/Category';
+import Carousel from '../components/Carousel';
 
 
 const Home = () => {

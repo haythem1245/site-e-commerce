@@ -1,17 +1,20 @@
 import { useNavigate } from "react-router-dom";
-
+import famme from "../img/famme.jpg";
+import homme from "../img/homme.jpg";
+import enfants from "../img/enfants.jpg";
+import accessoires from "../img/accessoires.jpg";
 const categories = [
-  { name: "female", image: "https://readdy.ai/api/search-image?query=elegant%20womens%20clothing...", description: "Mode femme" },
-  { name: "men", image: "https://readdy.ai/api/search-image?query=stylish%20mens%20clothing...", description: "Mode homme" },
-  { name: "accessories", image: "https://readdy.ai/api/search-image?query=premium%20accessories...", description: "Accessoires" },
-  { name: "kids", image: "https://readdy.ai/api/search-image?query=luxury%20footwear...", description: "Enfants" },
+  { name: "female", image: famme , description: "Mode femme" },
+  { name: "men", image: homme , description: "Mode homme" },
+  { name: "accessories", image: accessoires , description: "Accessoires" },
+  { name: "kids", image: enfants , description: "Enfants" },
 ];
 
 const Category = () => {
   const navigate = useNavigate();
 
   const handleCategoryClick = (category) => {
-    navigate(`/products?category=${encodeURIComponent(category)}`); // ✅ corrigé
+    navigate(`/products?category=${encodeURIComponent(category)}`); 
   };
 
   return (

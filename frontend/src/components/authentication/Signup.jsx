@@ -1,14 +1,16 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 import {toast,ToastContainer} from 'react-toastify';
 
 const Signup = () => {
+  const navigate = useNavigate();
   const [form, setForm] = useState({
     email: "",
     password: "",
     name: "",
     phone: "",
+    role:"",
   });
  
  
@@ -35,8 +37,9 @@ const Signup = () => {
 
       console.log("✅ Inscription réussie :", response.data);
       toast.success("Compte créé avec succès !");
-      setForm({ email: "", password: "", name: "", phone: "" });
-      
+      setForm({ email: "", password: "", name: "", phone: "",role:"" });
+       // ✅ Rediriger vers la page de connexion après un court délai
+      setTimeout(() => navigate("/signin"), 1500);
     
     } catch (error) {
       console.error("❌ Erreur lors de l'inscription :", error);
@@ -128,6 +131,20 @@ const Signup = () => {
               value={form.phone}
               onChange={handleChange}
               placeholder="+216 99 999 999"
+              required
+              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
+            />
+          </div>
+            <div>
+            <label className="block mb-1 text-sm font-semibold text-gray-700">
+              Role
+            </label>
+            <input
+              type="text"
+              name="role"
+              value={form.role}
+              onChange={handleChange}
+              placeholder="Votre role "
               required
               className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
             />

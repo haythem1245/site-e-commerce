@@ -40,7 +40,7 @@ const Cart = () => {
                 <div key={item.id} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
                   <div className="flex flex-col md:flex-row gap-6">
                     <div className="flex-shrink-0">
-                      <img src={item.image} alt={item.name} className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg" />
+                      <img src={item.images} alt={item.name} className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg" />
                     </div>
 
                     <div className="flex-1">
