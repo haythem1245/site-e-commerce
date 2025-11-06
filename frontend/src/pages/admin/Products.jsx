@@ -8,8 +8,14 @@ const Products = () => {
   const [formData, setFormData] = useState({
     name: "",
     price: "",
+    finalPrice: "",
+    description: "",
     category: "",
     stock: "",
+    featured: false,
+    isNew: false,
+    sold: 0,
+    newSold: 0,
     images: null,
   });
   const [editId, setEditId] = useState(null);
@@ -34,13 +40,31 @@ const Products = () => {
       setFormData({
         name: product.name,
         price: product.price,
+        finalPrice: product.finalPrice || "",
+        description: product.description,
         category: product.category,
         stock: product.stock,
+        featured: product.featured,
+        isNew: product.new,
+        sold: product.sold,
+        newSold: product.newSold,
         images: null,
       });
       setEditId(product._id);
     } else {
-      setFormData({ name: "", price: "", category: "", stock: "", images: null });
+      setFormData({
+        name: "",
+        price: "",
+        finalPrice: "",
+        description: "",
+        category: "",
+        stock: "",
+        featured: false,
+        isNew: false,
+        sold: 0,
+        newSold: 0,
+        images: null,
+      });
       setEditId(null);
     }
     setShowModal(true);
@@ -49,29 +73,60 @@ const Products = () => {
   // ✅ Fermer le modal
   const closeModal = () => {
     setShowModal(false);
-    setFormData({ name: "", price: "", category: "", stock: "", images: null });
+    setFormData({
+      name: "",
+      price: "",
+      finalPrice: "",
+      description: "",
+      category: "",
+      stock: "",
+      featured: false,
+      isNew: false,
+      sold: 0,
+      newSold: 0,
+      images: null,
+    });
     setEditId(null);
   };
 
   // ✅ Gérer le changement des champs
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData({
-      ...formData,
-      [name]: files ? files[0] : value,
-    });
+    const { name, value, type, checked, files } = e.target;
+    if (type === "checkbox") {
+      setFormData({ ...formData, [name]: checked });
+    } else if (files) {
+      setFormData({ ...formData, [name]: files[0] });
+    } else {
+      setFormData({ ...formData, [name]: value });
+    }
   };
 
   // ✅ Créer ou modifier un produit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!formData.name || !formData.price || !formData.category || !formData.description) {
+      toast.error("Veuillez remplir tous les champs obligatoires !");
+      return;
+    }
+
+    if (!editId && !formData.images) {
+      toast.error("Veuillez ajouter une image !");
+      return;
+    }
+
     try {
       const data = new FormData();
       data.append("name", formData.name);
       data.append("price", formData.price);
+      data.append("finalPrice", formData.finalPrice || formData.price);
+      data.append("description", formData.description);
       data.append("category", formData.category);
       data.append("stock", formData.stock);
+      data.append("featured", formData.featured);
+      data.append("isNew", formData.isNew);
+      data.append("sold", formData.sold);
+      data.append("newSold", formData.newSold);
       if (formData.images) data.append("images", formData.images);
 
       if (editId) {
@@ -96,7 +151,7 @@ const Products = () => {
       fetchProducts();
     } catch (err) {
       console.error("Erreur lors de l'enregistrement :", err);
-      toast.error("Erreur lors de l'enregistrement du produit");
+      toast.error(err.response?.data?.message || "Erreur lors de l'enregistrement du produit");
     }
   };
 
@@ -147,10 +202,7 @@ const Products = () => {
           <tbody>
             {products.length > 0 ? (
               products.map((p) => (
-                <tr
-                  key={p._id}
-                  className="border-t text-center hover:bg-gray-100 transition"
-                >
+                <tr key={p._id} className="border-t text-center hover:bg-gray-100 transition">
                   <td className="px-4 py-2">
                     <img
                       src={`http://localhost:5000/uploads/${p.images}`}
@@ -159,7 +211,7 @@ const Products = () => {
                     />
                   </td>
                   <td className="px-4 py-2 font-medium">{p.name}</td>
-                  <td className="px-4 py-2">{p.price} TND</td>
+                  <td className="px-4 py-2">{p.finalPrice || p.price} TND</td>
                   <td className="px-4 py-2">{p.category}</td>
                   <td className="px-4 py-2">{p.stock}</td>
                   <td className="px-4 py-2 space-x-2">
@@ -192,18 +244,26 @@ const Products = () => {
       {/* ✅ Modal d’ajout/modif produit */}
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 overflow-y-auto max-h-[90vh]">
             <h2 className="text-xl font-bold mb-4 text-gray-800">
               {editId ? "Modifier le produit" : "Ajouter un produit"}
             </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3">
               <input
                 type="text"
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
                 placeholder="Nom du produit"
+                className="w-full border p-2 rounded"
+                required
+              />
+              <textarea
+                name="description"
+                value={formData.description}
+                onChange={handleChange}
+                placeholder="Description"
                 className="w-full border p-2 rounded"
                 required
               />
@@ -217,12 +277,21 @@ const Products = () => {
                 required
               />
               <input
+                type="number"
+                name="finalPrice"
+                value={formData.finalPrice}
+                onChange={handleChange}
+                placeholder="Prix final (optionnel)"
+                className="w-full border p-2 rounded"
+              />
+              <input
                 type="text"
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
                 placeholder="Catégorie"
                 className="w-full border p-2 rounded"
+                required
               />
               <input
                 type="number"
@@ -231,14 +300,23 @@ const Products = () => {
                 onChange={handleChange}
                 placeholder="Stock"
                 className="w-full border p-2 rounded"
+                required
               />
+              <div className="flex items-center space-x-2">
+                <input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} />
+                <label>Produit vedette</label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <input type="checkbox" name="isNew" checked={formData.isNew} onChange={handleChange} />
+                <label>Nouveau produit</label>
+              </div>
               <input
                 type="file"
                 name="images"
                 onChange={handleChange}
                 className="w-full border p-2 rounded"
+                accept="image/*"
               />
-
               <div className="flex justify-end space-x-2 mt-4">
                 <button
                   type="button"

@@ -84,5 +84,23 @@ const getAllOrders = async (req, res) => {
     });
   }
 };
+// controllers/orderController.js
+const updateOrderStatus = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
 
-module.exports = { createOrder, getMyOrders,getAllOrders };
+    const order = await Order.findById(id);
+    if (!order) return res.status(404).json({ message: "Commande non trouvée" });
+
+    order.status = status;
+    await order.save();
+
+    res.json({ message: "Statut mis à jour avec succès", order });
+  } catch (error) {
+    console.error("Erreur updateOrderStatus :", error);
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
+module.exports = { createOrder, getMyOrders,getAllOrders,updateOrderStatus };

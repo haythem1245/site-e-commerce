@@ -6,4 +6,6 @@ const orderController = require('../controllers/orderController');
 router.post('/create',verifToken,orderController.createOrder);
 router.get('/',verifToken,orderController.getMyOrders);
 router.get('/orders',verifToken,verifRole("admin"),orderController.getAllOrders);
+router.put("/orders/:id/status", verifToken, verifRole("admin"),orderController.updateOrderStatus);
+
 module.exports = router;
