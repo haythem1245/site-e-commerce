@@ -65,5 +65,24 @@ const getMyOrders = async (req, res) => {
     });
   }
 };
+const getAllOrders = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user", "name email") // Afficher les infos de l’utilisateur
+      .sort({ createdAt: -1 });
 
-module.exports = { createOrder, getMyOrders };
+    res.status(200).json({
+      success: true,
+      count: orders.length,
+      orders,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Erreur serveur lors de la récupération des commandes",
+      error: error.message,
+    });
+  }
+};
+
+module.exports = { createOrder, getMyOrders,getAllOrders };

@@ -2,7 +2,7 @@ const express = require('express');
 const dotenv = require('dotenv').config();
 const connectDB = require('./config/db');
 const cors = require('cors');
-
+const adminRoutes = require("./routes/adminRouter");
 const app = express();
 const userRoutes = require('./routes/userRoute');
 const productRoutes = require('./routes/productRoute');
@@ -16,6 +16,7 @@ app.use(cors({
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 app.use(express.json());
+app.use("/api/v0/admin", adminRoutes);
 app.use('/api/v0', userRoutes);
 app.use('/api/v1', productRoutes);
 app.use('/api/v2', orderRoutes);

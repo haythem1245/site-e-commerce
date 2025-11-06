@@ -170,7 +170,21 @@ const updateProfile = async (req, res) => {
         res.status(500).json({ message: "Erreur serveur", error: error.message });
     }
 };
+const deleteUser = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const deletedUser = await User.findByIdAndDelete(id);
 
-module.exports = { signup, login, getProfile, updateProfile ,getAllProfile,getMyProfile,updateMyProfile};
+    if (!deletedUser) {
+      return res.status(404).json({ message: "Utilisateur non trouvé" });
+    }
+
+    res.json({ message: "Utilisateur supprimé avec succès" });
+  } catch (error) {
+    res.status(500).json({ message: "Erreur serveur", error: error.message });
+  }
+};
+
+module.exports = { signup, login, getProfile, updateProfile ,getAllProfile,getMyProfile,updateMyProfile,deleteUser};
 
 

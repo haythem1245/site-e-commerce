@@ -1,13 +1,6 @@
-import React, { useState, useRef } from "react";
+import { useState, useRef } from "react";
 import logo from "../assets/Shopman.png";
-import {
-  ShoppingCart,
-  User,
-  Search,
-  LogIn,
-  UserPlus,
-  LogOut,
-} from "lucide-react";
+import { ShoppingCart, User, Search, LogIn, UserPlus, LogOut } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthProvider";
@@ -26,7 +19,6 @@ const Navbar = () => {
   const { user, logout, loading } = useAuth();
   const navigate = useNavigate();
 
-  // --- Handle classic search (with redirect)
   const handleSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -36,13 +28,11 @@ const Navbar = () => {
     }
   };
 
-  // --- Handle logout
   const handleLogout = () => {
     logout();
     setIsUserMenuOpen(false);
   };
 
-  // --- Handle user dropdown (desktop)
   const handleMouseEnter = () => {
     clearTimeout(hoverTimeoutRef.current);
     setIsUserMenuOpen(true);
@@ -54,12 +44,11 @@ const Navbar = () => {
     }, 200);
   };
 
-  // --- Loading state
   if (loading) {
     return (
-      <nav className="bg-gradient-to-r from-white to-gray-200 text-neutral-700 px-6 md:px-20 py-2 shadow relative">
+      <nav className="bg-blue-50 text-gray-700 px-6 md:px-20 py-3 shadow">
         <div className="flex items-center justify-between">
-          <img src={logo} alt="Logo" className="h-8 w-auto" />
+          <img src={logo} alt="ShopMan" className="h-10 w-auto" />
           <span className="text-sm text-gray-500">Chargement...</span>
         </div>
       </nav>
@@ -67,94 +56,75 @@ const Navbar = () => {
   }
 
   return (
-    <nav className="bg-gradient-to-r from-white to-gray-200 text-neutral-700 px-6 md:px-20 py-2 shadow relative">
-      <div className="flex items-center justify-between">
-        {/* 🌀 Logo */}
+    <nav className="bg-white shadow-md sticky top-0 z-50 transition-all">
+      <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+        {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
-          <img src={logo} alt="Logo" className="h-8 w-auto" />
+          <img src={logo} alt="ShopMan" className="h-10 w-auto" />
         </Link>
 
-        {/* 🧭 Desktop Menu */}
-        <div className="hidden md:flex md:items-center md:gap-8">
-          <Link to="/products" className="hover:text-blue-600">
-            Boutique
-          </Link>
-          <Link to="/about" className="hover:text-blue-600">
-            About
-          </Link>
-          <Link to="/contact" className="hover:text-blue-600">
-            Contact
-          </Link>
+        {/* Desktop Menu */}
+        <div className="hidden md:flex items-center gap-8 font-medium text-gray-700">
+          <Link to="/products" className="hover:text-blue-600 transition-colors">Boutique</Link>
+          <Link to="/about" className="hover:text-blue-600 transition-colors">À propos</Link>
+          <Link to="/contact" className="hover:text-blue-600 transition-colors">Contact</Link>
         </div>
 
-        {/* 🔍 Search + Icons */}
-        <div className="flex items-center space-x-4">
-          {/* 🔎 Search Button (opens the ChercheProduit bar) */}
+        {/* Icons & Search */}
+        <div className="flex items-center gap-4">
+          {/* Search Button */}
           <button
-            onClick={() => setShowSearchBar((prev) => !prev)}
-            className="hidden md:block p-2 hover:text-blue-600"
-            title="Rechercher un produit"
+            onClick={() => setShowSearchBar(prev => !prev)}
+            className="hidden md:flex p-2 rounded hover:bg-blue-50 transition"
+            title="Rechercher"
           >
-            <Search className="h-5 w-5" />
+            <Search className="h-5 w-5 text-gray-700" />
           </button>
 
-          {/* 🛒 Cart */}
+          {/* Cart */}
           <Link to="/cart" className="relative">
-            <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600" />
+            <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-blue-600 transition" />
             {cartItems.length > 0 && (
-              <span className="bg-red-500 px-2 rounded-full absolute -top-3 -right-3 text-white text-xs">
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 rounded-full">
                 {cartItems.length}
               </span>
             )}
           </Link>
 
-          {/* 👤 User (Desktop Dropdown) */}
+          {/* User Menu */}
           <div
             className="relative hidden md:block"
             ref={dropdownRef}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           >
-            <button className="font-semibold px-3 py-2 hover:text-blue-600 transition flex items-center gap-2">
+            <button className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
               {user ? (
-                <img
-                  src={user?.image || "/default-avatar.png"}
-                  alt="avatar"
-                  className="h-8 w-8 rounded-full border"
-                />
+                <img src={user?.image || "/default-avatar.png"} alt="avatar" className="h-8 w-8 rounded-full border" />
               ) : (
-                <User className="h-5 w-5" />
+                <User className="h-5 w-5 text-gray-700" />
               )}
             </button>
 
             {isUserMenuOpen && (
-              <div className="absolute top-full right-0 mt-2 flex flex-col bg-white text-black rounded shadow-lg z-10 min-w-[180px] border border-gray-200">
+              <div className="absolute right-0 mt-2 bg-white border border-gray-200 shadow-lg rounded-md z-10 min-w-[180px]">
                 {!user ? (
                   <>
-                    <Link
-                      to="/signin"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                    >
+                    <Link to="/signin" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
                       <LogIn className="h-4 w-4" /> Login
                     </Link>
-                    <Link
-                      to="/signup"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                    >
+                    <Link to="/signup" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
                       <UserPlus className="h-4 w-4" /> Signup
                     </Link>
                   </>
                 ) : (
                   <>
-                    <Link
-                      to="/profile"
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100"
-                    >
+                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
                       <User className="h-4 w-4" /> Profil
                     </Link>
                     <button
                       onClick={handleLogout}
-                      className="flex items-center gap-2 px-4 py-2 hover:bg-gray-100 text-left"
+                      className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-blue-50 transition"
                     >
                       <LogOut className="h-4 w-4" /> Déconnexion
                     </button>
@@ -164,58 +134,26 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* 📱 Mobile Icons */}
-          <div className="flex items-center gap-3 md:hidden">
+          {/* Mobile Menu Button */}
+          <div className="flex md:hidden items-center gap-3">
             <button
-              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              className="p-1 hover:text-blue-600"
+              onClick={() => setIsMobileMenuOpen(prev => !prev)}
+              className="p-1 hover:text-blue-600 transition"
             >
-              <Search className="h-6 w-6" />
-            </button>
-
-            <Link to={user ? "/profile" : "/signin"} className="p-1">
-              {user ? (
-                <img
-                  src={user?.image || "/default-avatar.png"}
-                  alt="avatar"
-                  className="h-8 w-8 rounded-full border"
-                />
-              ) : (
-                <User className="h-6 w-6" />
-              )}
-            </Link>
-
-            <button
-              onClick={() => setIsUserMenuOpen((prev) => !prev)}
-              className="p-1 hover:text-blue-600"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                stroke="currentColor"
-                className="w-6 h-6"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                strokeWidth="2" stroke="currentColor" className="w-6 h-6">
+                <path strokeLinecap="round" strokeLinejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16" />
               </svg>
             </button>
           </div>
         </div>
       </div>
 
-      {/* 📱 Mobile Dropdown */}
-      {(isMobileMenuOpen || isUserMenuOpen) && (
-        <div className="md:hidden bg-white border-t shadow mt-2 py-3 px-5 space-y-3">
-          {/* Search form */}
-          <form
-            onSubmit={handleSearch}
-            className="flex items-center border rounded px-2 py-1"
-          >
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="md:hidden bg-white border-t shadow px-5 py-4 space-y-3">
+          <form onSubmit={handleSearch} className="flex items-center border rounded px-2 py-1">
             <input
               type="text"
               value={searchQuery}
@@ -228,39 +166,24 @@ const Navbar = () => {
             </button>
           </form>
 
-          {/* Links */}
-          <Link to="/products" className="block hover:text-blue-600">
-            Boutique
-          </Link>
-          <Link to="/about" className="block hover:text-blue-600">
-            About
-          </Link>
-          <Link to="/contact" className="block hover:text-blue-600">
-            Contact
-          </Link>
+          <Link to="/products" className="block hover:text-blue-600 transition">Boutique</Link>
+          <Link to="/about" className="block hover:text-blue-600 transition">À propos</Link>
+          <Link to="/contact" className="block hover:text-blue-600 transition">Contact</Link>
 
-          {/* Auth actions */}
           {user ? (
-            <button
-              onClick={handleLogout}
-              className="block text-left w-full hover:text-blue-600"
-            >
+            <button onClick={handleLogout} className="block text-left w-full hover:text-blue-600 transition">
               Déconnexion
             </button>
           ) : (
             <>
-              <Link to="/signin" className="block hover:text-blue-600">
-                Login
-              </Link>
-              <Link to="/signup" className="block hover:text-blue-600">
-                Signup
-              </Link>
+              <Link to="/signin" className="block hover:text-blue-600 transition">Login</Link>
+              <Link to="/signup" className="block hover:text-blue-600 transition">Signup</Link>
             </>
           )}
         </div>
       )}
 
-      {/* 🔎 Barre de recherche interactive (ChercheProduit) */}
+      {/* Search Bar */}
       {showSearchBar && (
         <div className="absolute left-0 top-full w-full bg-white shadow-lg z-50 p-4 border-t border-gray-200">
           <ChercheProduit />

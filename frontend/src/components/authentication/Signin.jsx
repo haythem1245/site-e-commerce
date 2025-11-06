@@ -1,8 +1,8 @@
-import React, { useState, useContext } from "react"; // 🔹 ajouter useContext
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { useAuth } from "../../context/AuthProvider"; // 🔹 importer ton AuthContext
+import { useAuth } from "../../context/AuthProvider"; // ✅ ton AuthContext
 
 const Login = () => {
   const { login } = useAuth();
@@ -21,9 +21,16 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await login(form.email, form.password); // 🔹 utilise la fonction login du AuthProvider
-      toast.success("Connexion réussie !");
-      navigate("/"); // redirection après login
+      // 🔹 On appelle la fonction login de ton AuthProvider
+      const userData = await login(form.email, form.password);
+
+      if (userData && userData.role === "admin") {
+        toast.success("Bienvenue, administrateur !");
+        navigate("/admin/dashboard"); // ✅ redirection admin
+      } else {
+        toast.success("Connexion réussie !");
+        navigate("/"); // ✅ redirection utilisateur normal
+      }
     } catch (err) {
       toast.error("Email ou mot de passe incorrect");
     }

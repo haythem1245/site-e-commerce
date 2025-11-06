@@ -16,7 +16,13 @@ import Profile from './pages/Profile';
 import About from './pages/About';
 import Checkout from './pages/Checkout';
 import MyOrder from './pages/MyOrder';
+import ProtectedRoute from './routes/ProtectedRoute';
+import Dashboard from "./pages/admin/Dashboard";
 
+import AdminLayout from './layouts/AdmineLayout';
+import Order from './pages/admin/Order';
+import Users from './pages/admin/Users';
+import Products from './pages/admin/Products';
 
 function App() {
     const { cartItems, setCartItems } = useCart()
@@ -49,7 +55,21 @@ function App() {
       <Route path='/checkout' element={<Checkout/>}></Route>
       <Route path='/orders' element={<MyOrder/>}></Route>
       
-     
+      {/* Admin routes */}
+       <Route
+          path="/admin"
+          element={
+            <ProtectedRoute role="admin">
+              <AdminLayout/>
+            </ProtectedRoute>
+          }
+        >
+          <Route path="dashboard" element={<Dashboard/>} />
+          <Route path="order" element={<Order/>} />
+          <Route path="users" element={<Users/>} />
+          <Route path="products" element={<Products/>} />
+          <Route path="profile" element={<Profile/>} />
+        </Route>
      </Routes>
      <Footer/>
     </>
