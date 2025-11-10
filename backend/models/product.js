@@ -22,6 +22,7 @@ const productSchema = new mongoose.Schema({
         type: String,
         required: [true, "Please enter product images"],
     },
+    imagePublicId: String,
     category: {
         type: String,
         required: [true, "Please select category for this product"],

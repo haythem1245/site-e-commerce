@@ -13,7 +13,6 @@ const userSchema = new mongoose.Schema({
     },
     phone: {
         type: String,
-        required: [true, "Please enter your phone number"],
         maxLength: [200, "Your phone number cannot exceed 200 characters"],
     },
     address: {
@@ -31,6 +30,10 @@ const userSchema = new mongoose.Schema({
         default : "https://img.freepik.com/vecteurs-premium/creation-logo-homme-affaires-moderne-logo-masculin-icone-pour-profil-avatar_115973-4648.jpg?w=2000"
 
     },
+      imagePublicId:{
+        type :String,
+        default :"",
+      },
      role: { type: String,
          enum: ["user", "admin"],
           default: "user" }

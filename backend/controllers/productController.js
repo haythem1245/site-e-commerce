@@ -2,58 +2,39 @@ const Product = require('../models/product');
 const FuturProduct = require('../models/futureProducts');
 const fs = require("fs");
 const path = require("path");
+const cloudinary = require('cloudinary').v2;
 
 const ajoutProduct = async (req, res) => {
-    try {
-        // Récupérer les données envoyées dans le body
-        const { name, price,  description,category,featured, stock ,new:isNew ,sold,newSold } = req.body;
+    
+  try {
+    const file = req.file;
+    let imageUrl = null;
+    let publicId = null;
 
-        if (!req.file) {
-      return res.status(400).json({ message: "Aucune image uploadée" });
+    if (file) {
+      const result = await cloudinary.uploader.upload(file.path, {
+        folder: "products",
+      });
+      imageUrl = result.secure_url;
+      publicId = result.public_id;
+
+      fs.unlinkSync(file.path);
     }
 
-   
-      const image = req.file.filename;
-      let finalPrice = Number(price); // prix original
+    const product = new Product({
+      ...req.body,
+      images: imageUrl,
+      imagePublicId: publicId,
+    });
 
-    // 1️⃣ Appliquer la première réduction (sold)
-    if (sold && sold > 0) {
-      finalPrice = finalPrice - (finalPrice * sold / 100);
-    }
-
-    // 2️⃣ Appliquer la deuxième réduction (newSold)
-    if (newSold && newSold > 0) {
-      finalPrice = finalPrice - (finalPrice * newSold / 100);
-    }
-        // Créer un nouveau produit
-        const newProduct = new Product({
-            name,
-            price,
-            finalPrice,
-            description,
-            images:image,
-            category,
-            stock,
-            featured: featured || false,
-      new: isNew || false,
-           sold: sold || 0,
-      newSold: newSold || 0,
-        });
-
-        // Sauvegarder dans la base
-        const savedProduct = await newProduct.save();
-console.log(savedProduct);
-        res.status(201).json({
-            message: "Produit ajouté avec succès",
-            product: savedProduct
-        });
-    } catch (error) {
-        res.status(500).json({
-            message: "Erreur serveur",
-            error: error.message
-        });
-    }
+    const savedProduct = await product.save();
+    res.status(201).json(savedProduct);
+  } catch (error) {
+    console.error("Error creating product:", error);
+    res.status(400).json({ message: error.message });
+  }
 };
+
 
 
 const getProductById = async (req, res) => {
@@ -104,7 +85,7 @@ const updateProducts = async (req, res) => {
     const { name, price, description, category, stock, new: isNew, sold, newSold } = req.body;
     const { id } = req.params;
 
-    // 🔍 Vérifier si le produit existe
+    // Vérifier si le produit existe
     const product = await Product.findById(id);
     if (!product) {
       return res.status(404).json({ message: "Produit non trouvé ❌" });
@@ -112,14 +93,24 @@ const updateProducts = async (req, res) => {
 
     // 🔄 Si une nouvelle image est uploadée
     if (req.file) {
-      const oldImagePath = path.join(__dirname, "..", "uploads", product.images);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath); // 🗑️ Supprime l’ancienne image
+      // Supprimer l’ancienne image sur Cloudinary si elle existe
+      if (product.imagePublicId) {
+        await cloudinary.uploader.destroy(product.imagePublicId);
       }
-      product.images = req.file.filename; // Remplace l’image
+
+      // Upload de la nouvelle image sur Cloudinary
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "products",
+      });
+
+      product.images = result.secure_url;
+      product.imagePublicId = result.public_id;
+
+      // Supprimer le fichier temporaire local
+      fs.unlinkSync(req.file.path);
     }
 
-    // 📝 Mise à jour des autres champs si présents
+    // Mise à jour des autres champs si présents
     if (name) product.name = name;
     if (price !== undefined) product.price = price;
     if (description) product.description = description;
@@ -129,20 +120,15 @@ const updateProducts = async (req, res) => {
     if (sold !== undefined) product.sold = sold;
     if (newSold !== undefined) product.newSold = newSold;
 
-    // 💾 Enregistrer les changements
     const updatedProduct = await product.save();
 
     res.status(200).json({
       message: "✅ Produit mis à jour avec succès",
       product: updatedProduct,
     });
-
   } catch (error) {
-    console.error("Erreur lors de la mise à jour :", error);
-    res.status(500).json({
-      message: "Erreur serveur ❌",
-      error: error.message,
-    });
+    console.error("Erreur mise à jour produit:", error);
+    res.status(500).json({ message: error.message });
   }
 };
 

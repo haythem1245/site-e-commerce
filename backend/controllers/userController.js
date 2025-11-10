@@ -1,6 +1,7 @@
 const User = require('../models/user');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const cloudinary = require('cloudinary').v2;
 
 // Inscription (signup)
 const signup = async (req, res) => {
@@ -153,22 +154,46 @@ const getAllProfile = async (req, res) => {
 
 const updateProfile = async (req, res) => {
     try {
-        const { name, email, password, phone, address, image,role } = req.body;
+    const { name, email, password, phone, address, role } = req.body;
 
-        const user = await User.findByIdAndUpdate(
-            req.user.id,
-            { name, email, password, phone, address, image,role },
-            { new: true, runValidators: true } 
-        ).select("name email phone address city country postalCode");
+    const user = await User.findById(req.user.id);
+    if (!user) return res.status(404).json({ message: "Utilisateur non trouvé" });
 
-        if (!user) {
-            return res.status(404).json({ message: "Utilisateur non trouvé" });
-        }
+    // 🔄 Si une nouvelle image est uploadée
+    if (req.file) {
+      // Supprimer l’ancienne image sur Cloudinary si elle existe
+      if (user.imagePublicId) {
+        await cloudinary.uploader.destroy(user.imagePublicId)
+          .catch(err => console.log("Erreur suppression Cloudinary:", err));
+      }
 
-        res.json({ message: "Profil mis à jour avec succès", user });
-    } catch (error) {
-        res.status(500).json({ message: "Erreur serveur", error: error.message });
+      // Upload de la nouvelle image
+      const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "users",
+      });
+
+      user.image = result.secure_url;
+      user.imagePublicId = result.public_id;
+
+      // Supprimer le fichier temporaire local
+      fs.unlinkSync(req.file.path);
     }
+
+    // 🔹 Mise à jour des autres champs
+    if (name) user.name = name;
+    if (email) user.email = email;
+    if (password) user.password = password; // 🔒 penser à hasher en prod
+    if (phone) user.phone = phone;
+    if (address) user.address = address;
+    if (role) user.role = role;
+
+    const updatedUser = await user.save();
+
+    res.json({ message: "Profil mis à jour ✅", user: updatedUser });
+  } catch (error) {
+    console.error("Erreur mise à jour profil:", error);
+    res.status(500).json({ message: "Erreur serveur ❌", error: error.message });
+  }
 };
 const deleteUser = async (req, res) => {
   try {
