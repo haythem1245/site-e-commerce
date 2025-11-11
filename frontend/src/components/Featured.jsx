@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import axios from "axiosinstance";
+import  { useEffect, useState } from "react";
+import axios from "../service/axiosInstance";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
