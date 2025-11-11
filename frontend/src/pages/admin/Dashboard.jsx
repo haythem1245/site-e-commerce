@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "../service/axiosInstance";
+import axios from "../../service/axiosInstance";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
