@@ -15,8 +15,21 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://frontend-niip.onrender.com"
+];
+
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: function(origin, callback){
+    // Autoriser les requêtes sans origine (ex: Postman)
+    if(!origin) return callback(null, true);
+    if(allowedOrigins.indexOf(origin) === -1){
+      const msg = 'CORS policy: This origin is not allowed.';
+      return callback(new Error(msg), false);
+    }
+    return callback(null, true);
+  },
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
