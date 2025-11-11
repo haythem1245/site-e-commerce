@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "axiosinstance";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -7,7 +7,7 @@ const Dashboard = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("https://site-e-commerce-ifpq.onrender.com/api/v0/admin/stats", {
+      .get("/api/v0/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setStats(res.data.stats))

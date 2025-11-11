@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "axiosinstance";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -8,7 +8,7 @@ const Users = () => {
   const fetchUsers = () => {
     const token = localStorage.getItem("token");
     axios
-      .get("https://site-e-commerce-ifpq.onrender.com/api/v0/profiles", {
+      .get("/api/v0/profiles", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUsers(res.data))
@@ -24,7 +24,7 @@ const Users = () => {
     const token = localStorage.getItem("token");
     if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
       axios
-        .delete(`https://site-e-commerce-ifpq.onrender.com/api/v0/profile/${id}`, {
+        .delete(`/api/v0/profile/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => fetchUsers())

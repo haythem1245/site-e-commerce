@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "axios";
+import axios from "axiosinstance";
 import { Link,useNavigate } from "react-router-dom";
 import {toast,ToastContainer} from 'react-toastify';
 
@@ -28,7 +28,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "https://site-e-commerce-ifpq.onrender.com/api/v0/signup",
+        "/api/v0/signup",
         form,
         {
           headers: { "Content-Type": "application/json" },

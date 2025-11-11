@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+import axios from "axiosinstance";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -8,7 +8,7 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("https://site-e-commerce-ifpq.onrender.com/api/v0/me", {
+      .get("/api/v0/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -22,7 +22,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     axios
       .put(
-        "https://site-e-commerce-ifpq.onrender.com/api/v0/me",
+        "/api/v0/me",
         { name },
         { headers: { Authorization: `Bearer ${token}` } }
       )
