@@ -8,7 +8,7 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:5000/api/v0/me", {
+      .get("https://site-e-commerce-ifpq.onrender.com/api/v0/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -22,7 +22,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     axios
       .put(
-        "http://localhost:5000/api/v0/me",
+        "https://site-e-commerce-ifpq.onrender.com/api/v0/me",
         { name },
         { headers: { Authorization: `Bearer ${token}` } }
       )

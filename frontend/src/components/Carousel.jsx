@@ -93,7 +93,7 @@ const navigate = useNavigate();
                 </button>
               </div>
               <div>
-                <img src={`http://localhost:5000/uploads/${product.images}`} alt={product.name}
+                <img src={`https://site-e-commerce-ifpq.onrender.com/uploads/${product.images}`} alt={product.name}
   className="rounded-full w-[350px] hover:scale-105 transition-all shadow-2xl shadow-red-400"
 />
 

@@ -1,6 +1,6 @@
 import axios from 'axios';
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api/v0',
+  baseURL: 'https://site-e-commerce-ifpq.onrender.com/api/v0',
   withCredentials: true,
 
 });

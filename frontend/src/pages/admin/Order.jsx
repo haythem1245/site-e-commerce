@@ -10,7 +10,7 @@ const Order = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/v2/orders", {
+        const res = await axios.get("https://site-e-commerce-ifpq.onrender.com/api/v2/orders", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
@@ -35,7 +35,7 @@ const Order = () => {
   const handleStatusChange = async (orderId, newStatus) => {
     try {
       await axios.put(
-        `http://localhost:5000/api/v2/orders/${orderId}/status`,
+        `https://site-e-commerce-ifpq.onrender.com/api/v2/orders/${orderId}/status`,
         { status: newStatus },
         { headers: { Authorization: `Bearer ${token}` } }
       );

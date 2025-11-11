@@ -132,7 +132,7 @@ const Productscard = () => {
                         <img
                           src={
                             product.images
-                              ? `http://localhost:5000/uploads/${product.images}`
+                              ? `https://site-e-commerce-ifpq.onrender.com/uploads/${product.images}`
                               : "/no-image.png"
                           }
                           alt={product.name}

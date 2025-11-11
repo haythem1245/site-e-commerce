@@ -8,7 +8,7 @@ const Users = () => {
   const fetchUsers = () => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:5000/api/v0/profiles", {
+      .get("https://site-e-commerce-ifpq.onrender.com/api/v0/profiles", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUsers(res.data))
@@ -24,7 +24,7 @@ const Users = () => {
     const token = localStorage.getItem("token");
     if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
       axios
-        .delete(`http://localhost:5000/api/v0/profile/${id}`, {
+        .delete(`https://site-e-commerce-ifpq.onrender.com/api/v0/profile/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => fetchUsers())

@@ -26,7 +26,7 @@ const Products = () => {
   // ✅ Charger tous les produits
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/v1/products");
+      const res = await axios.get("https://site-e-commerce-ifpq.onrender.com/api/v1/products");
       setProducts(res.data);
     } catch (err) {
       console.error("Erreur lors du chargement des produits :", err);
@@ -130,7 +130,7 @@ const Products = () => {
       if (formData.images) data.append("images", formData.images);
 
       if (editId) {
-        await axios.put(`http://localhost:5000/api/v1/product/${editId}`, data, {
+        await axios.put(`https://site-e-commerce-ifpq.onrender.com/api/v1/product/${editId}`, data, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
@@ -138,7 +138,7 @@ const Products = () => {
         });
         toast.success("Produit modifié avec succès !");
       } else {
-        await axios.post("http://localhost:5000/api/v1/product", data, {
+        await axios.post("https://site-e-commerce-ifpq.onrender.com/api/v1/product", data, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "multipart/form-data",
@@ -159,7 +159,7 @@ const Products = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Voulez-vous vraiment supprimer ce produit ?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/v1/product/${id}`, {
+      await axios.delete(`https://site-e-commerce-ifpq.onrender.com/api/v1/product/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       toast.success("Produit supprimé avec succès");

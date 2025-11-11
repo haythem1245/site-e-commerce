@@ -28,7 +28,7 @@ const Signup = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/api/v0/signup",
+        "https://site-e-commerce-ifpq.onrender.com/api/v0/signup",
         form,
         {
           headers: { "Content-Type": "application/json" },

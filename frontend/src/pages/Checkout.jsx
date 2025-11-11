@@ -65,7 +65,7 @@ const Checkout = () => {
         totalPrice: total + 10.0 + total * 0.05,
       };
 
-      await axios.post("http://localhost:5000/api/v2/create", orderData, {
+      await axios.post("https://site-e-commerce-ifpq.onrender.com/api/v2/create", orderData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,
