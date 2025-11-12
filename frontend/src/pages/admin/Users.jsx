@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "../../service/axiosInstance";
+import axios from "axios";
 
 const Users = () => {
   const [users, setUsers] = useState([]);
@@ -8,7 +8,7 @@ const Users = () => {
   const fetchUsers = () => {
     const token = localStorage.getItem("token");
     axios
-      .get("/api/v0/profiles", {
+      .get("http://localhost:5000/api/v0/profiles", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setUsers(res.data))
@@ -24,7 +24,7 @@ const Users = () => {
     const token = localStorage.getItem("token");
     if (window.confirm("Voulez-vous vraiment supprimer cet utilisateur ?")) {
       axios
-        .delete(`/api/v0/profile/${id}`, {
+        .delete(`http://localhost:5000/api/v0/profile/${id}`, {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then(() => fetchUsers())

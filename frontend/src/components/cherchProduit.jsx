@@ -68,7 +68,7 @@ const ChercheProduit = () => {
             className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition"
           >
             <img
-              src={`https://site-e-commerce-ifpq.onrender.com/uploads/${product.images}`}
+              src={`http://localhost:5000/uploads/${product.images}`}
               alt={product.name}
              className="w-10 h-10 object-cover mx-auto mb-4 rounded-xl shadow-md hover:shadow-lg hover:scale-105 transition-transform duration-300"
               onClick={() => navigate(`/products/${product._id}`)}

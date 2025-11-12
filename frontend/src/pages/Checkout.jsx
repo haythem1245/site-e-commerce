@@ -1,5 +1,5 @@
 import { useState } from "react";
-import axios from "../service/axiosInstance";
+import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useCart } from "../context/CartContext";
@@ -65,7 +65,7 @@ const Checkout = () => {
         totalPrice: total + 10.0 + total * 0.05,
       };
 
-      await axios.post("/api/v2/create", orderData, {
+      await axios.post("http://localhost:5000/api/v2/create", orderData, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${user.token}`,

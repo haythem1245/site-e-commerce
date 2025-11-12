@@ -1,5 +1,5 @@
 import  { useEffect, useState } from "react";
-import axios from "../service/axiosInstance";
+import axios from "axios";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
@@ -12,7 +12,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("/api/v1/products");
+        const res = await axios.get("http://localhost:5000/api/v1/products");
         setProducts(res.data);
       } catch (err) {
         console.error("Erreur de chargement :", err);
@@ -98,7 +98,7 @@ const FeaturedProducts = () => {
                   )}
 
                   <img
-                    src={`https://site-e-commerce-ifpq.onrender.com/uploads/${product.images}`}
+                    src={`http://localhost:5000/uploads/${product.images}`}
                     alt={product.name}
                     className="w-full h-72 object-cover object-center group-hover:opacity-90 transition"
                   />

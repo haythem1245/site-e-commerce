@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect, useContext } from "react";
-import axios from "../service/axiosInstance";
+import axios from "axios";
 import { jwtDecode } from "jwt-decode";
 
 const AuthContext = createContext();
@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
 
       // 🔹 Précharge l'utilisateur
       axios
-        .get("/api/v0/me", {
+        .get("http://localhost:5000/api/v0/me", {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setUser({ ...res.data, token }))
@@ -49,7 +49,7 @@ export const AuthProvider = ({ children }) => {
   // ✅ Connexion
   const login = async (email, password) => {
     try {
-      const res = await axios.post("/api/v0/login", {
+      const res = await axios.post("http://localhost:5000/api/v0/login", {
         email,
         password,
       });
@@ -82,7 +82,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) return null;
 
-      const res = await axios.get("/api/v0/me", {
+      const res = await axios.get("http://localhost:5000/api/v0/me", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -100,7 +100,7 @@ export const AuthProvider = ({ children }) => {
       const token = localStorage.getItem("token");
       if (!token) throw new Error("Utilisateur non connecté");
 
-      const res = await axios.put("/api/v0/me", updates, {
+      const res = await axios.put("http://localhost:5000/api/v0/me", updates, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

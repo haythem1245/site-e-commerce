@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "../../service/axiosInstance";
+import axios from "axios";
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -8,7 +8,7 @@ const Profile = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("/api/v0/me", {
+      .get("http://localhost:5000/api/v0/me", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => {
@@ -22,7 +22,7 @@ const Profile = () => {
     const token = localStorage.getItem("token");
     axios
       .put(
-        "/api/v0/me",
+        "http://localhost:5000/api/v0/me",
         { name },
         { headers: { Authorization: `Bearer ${token}` } }
       )

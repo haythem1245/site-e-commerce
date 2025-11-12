@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import axios from "../service/axiosInstance";
+import axios from "axios";
 import { useAuth } from "../context/AuthProvider";
 
 const MyOrder = () => {
@@ -13,7 +13,7 @@ const MyOrder = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("/api/v2/", {
+        const res = await axios.get("http://localhost:5000/api/v2/", {
           headers: { Authorization: `Bearer ${token}` },
         });
 

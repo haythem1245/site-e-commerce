@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import axios from "../../service/axiosInstance";
+import axios from "axios";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
@@ -7,7 +7,7 @@ const Dashboard = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("/api/v0/admin/stats", {
+      .get("http://localhost:5000/api/v0/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setStats(res.data.stats))

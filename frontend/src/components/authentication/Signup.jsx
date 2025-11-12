@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import axios from "../../service/axiosInstance";
+import axios from "axios";
 import { Link,useNavigate } from "react-router-dom";
 import {toast,ToastContainer} from 'react-toastify';
 
@@ -27,8 +27,7 @@ const Signup = () => {
     console.log("Formulaire soumis :", form);
 
     try {
-      const response = await axios.post(
-        "/api/v0/signup",
+      const response = await axios.post("http://localhost:5000/api/v0/signup",
         form,
         {
           headers: { "Content-Type": "application/json" },

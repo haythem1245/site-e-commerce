@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import axios from "../service/axiosInstance";
+import axios from "axios";
 import { useCart } from "../context/CartContext";
 
 const SingleProduct = () => {
@@ -16,7 +16,7 @@ const SingleProduct = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`/api/v1/product/${id}`);
+        const res = await axios.get(`http://localhost:5000/api/v1/product/${id}`);
         const productData = res.data.product ? res.data.product : res.data;
         setProduct(productData);
         setError(null);
@@ -90,7 +90,7 @@ const SingleProduct = () => {
                 className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
                 src={
                   product.images
-                    ? `https://backend-32ot.onrender.com/uploads/${product.images}`
+                    ? `http://localhost:5000/uploads/${product.images}`
                     : "/no-image.png"
                 }
                 alt={product.name}
