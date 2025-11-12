@@ -98,7 +98,7 @@ const FeaturedProducts = () => {
                   )}
 
                   <img
-                    src={`http://localhost:5000/uploads/${product.images}`}
+                    src={product.images}
                     alt={product.name}
                     className="w-full h-72 object-cover object-center group-hover:opacity-90 transition"
                   />

@@ -132,7 +132,7 @@ const Productscard = () => {
                         <img
                           src={
                             product.images
-                              ? `https://localhost:5000/uploads/${product.images}`
+                              ? product.images
                               : "/no-image.png"
                           }
                           alt={product.name}

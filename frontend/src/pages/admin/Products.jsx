@@ -205,7 +205,7 @@ const Products = () => {
                 <tr key={p._id} className="border-t text-center hover:bg-gray-100 transition">
                   <td className="px-4 py-2">
                     <img
-                      src={`http://localhost:5000/uploads/${p.images}`}
+                      src={p.images}
                       alt={p.name}
                       className="h-12 w-12 object-cover rounded-md mx-auto"
                     />

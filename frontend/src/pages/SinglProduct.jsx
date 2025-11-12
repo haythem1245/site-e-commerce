@@ -90,7 +90,7 @@ const SingleProduct = () => {
                 className="max-h-full object-contain transition-transform duration-300 hover:scale-105"
                 src={
                   product.images
-                    ? `http://localhost:5000/uploads/${product.images}`
+                    ? product.images
                     : "/no-image.png"
                 }
                 alt={product.name}
