@@ -1,4 +1,4 @@
-import  { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,9 +45,9 @@ const Products = () => {
         category: product.category,
         stock: product.stock,
         featured: product.featured,
-        isNew: product.new,
-        sold: product.sold,
-        newSold: product.newSold,
+        isNew: product.isNew || false,
+        sold: product.sold || 0,
+        newSold: product.newSold || 0,
         images: null,
       });
       setEditId(product._id);
@@ -194,8 +194,9 @@ const Products = () => {
               <th className="px-4 py-2">Image</th>
               <th className="px-4 py-2">Nom</th>
               <th className="px-4 py-2">Prix</th>
-              <th className="px-4 py-2">Catégorie</th>
               <th className="px-4 py-2">Stock</th>
+              <th className="px-4 py-2">Ventes</th>
+              <th className="px-4 py-2">Nouvelles ventes</th>
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
@@ -204,16 +205,13 @@ const Products = () => {
               products.map((p) => (
                 <tr key={p._id} className="border-t text-center hover:bg-gray-100 transition">
                   <td className="px-4 py-2">
-                    <img
-                      src={p.images}
-                      alt={p.name}
-                      className="h-12 w-12 object-cover rounded-md mx-auto"
-                    />
+                    <img src={p.images} alt={p.name} className="h-12 w-12 object-cover rounded-md mx-auto" />
                   </td>
                   <td className="px-4 py-2 font-medium">{p.name}</td>
                   <td className="px-4 py-2">{p.finalPrice || p.price} TND</td>
-                  <td className="px-4 py-2">{p.category}</td>
                   <td className="px-4 py-2">{p.stock}</td>
+                  <td className="px-4 py-2">{p.sold}</td>
+                  <td className="px-4 py-2">{p.newSold}</td>
                   <td className="px-4 py-2 space-x-2">
                     <button
                       onClick={() => openModal(p)}
@@ -232,7 +230,7 @@ const Products = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="6" className="py-4 text-gray-500">
+                <td colSpan="7" className="py-4 text-gray-500">
                   Aucun produit trouvé
                 </td>
               </tr>
@@ -302,6 +300,25 @@ const Products = () => {
                 className="w-full border p-2 rounded"
                 required
               />
+
+              {/* ✅ Champs sold et newSold */}
+              <input
+                type="number"
+                name="sold"
+                value={formData.sold}
+                onChange={handleChange}
+                placeholder="Nombre de ventes (sold)"
+                className="w-full border p-2 rounded"
+              />
+              <input
+                type="number"
+                name="newSold"
+                value={formData.newSold}
+                onChange={handleChange}
+                placeholder="Nouvelles ventes (newSold)"
+                className="w-full border p-2 rounded"
+              />
+
               <div className="flex items-center space-x-2">
                 <input type="checkbox" name="featured" checked={formData.featured} onChange={handleChange} />
                 <label>Produit vedette</label>
