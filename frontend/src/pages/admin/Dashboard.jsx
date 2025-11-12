@@ -1,24 +1,51 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const [stats, setStats] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
     axios
       .get("https://site-e-commerce-1backend.onrender.com/api/v0/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setStats(res.data.stats))
-      .catch((err) => console.error("Erreur stats admin :", err));
-  }, []);
+      .catch((err) => {
+        console.error("Erreur stats admin :", err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token");
+          navigate("/login");
+        }
+      });
+  }, [navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   if (!stats) return <p>Chargement...</p>;
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Tableau de bord Admin</h1>
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Tableau de bord Admin</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition"
+        >
+          Se déconnecter
+        </button>
+      </div>
+
       <div className="grid grid-cols-2 gap-4">
         <div className="bg-blue-100 p-4 rounded-lg shadow">
           <h2>👥 Utilisateurs</h2>
