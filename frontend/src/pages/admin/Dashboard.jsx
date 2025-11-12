@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../context/AuthContext"; // ✅ adapte le chemin selon ton projet
+import { useAuth } from "../../context/AuthProvider"; // ✅ adapte le chemin selon ton projet
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react"; // ✅ icône moderne
 
