@@ -9,7 +9,7 @@ export const DataProvider = ({ children }) => {
     // fetching all products from api
     const fetchAllProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/v1/products");
+      const res = await axios.get("https://site-e-commerce-1backend.onrender.com/api/v1/products");
       const productsData = res.data;
       setData(productsData);
     } catch (error) {

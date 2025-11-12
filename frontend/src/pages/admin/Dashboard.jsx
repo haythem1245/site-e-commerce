@@ -7,7 +7,7 @@ const Dashboard = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     axios
-      .get("http://localhost:5000/api/v0/admin/stats", {
+      .get("https://site-e-commerce-1backend.onrender.com/api/v0/admin/stats", {
         headers: { Authorization: `Bearer ${token}` },
       })
       .then((res) => setStats(res.data.stats))

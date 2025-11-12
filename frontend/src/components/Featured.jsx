@@ -12,7 +12,7 @@ const FeaturedProducts = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/v1/products");
+        const res = await axios.get("https://site-e-commerce-1backend.onrender.com/api/v1/products");
         setProducts(res.data);
       } catch (err) {
         console.error("Erreur de chargement :", err);

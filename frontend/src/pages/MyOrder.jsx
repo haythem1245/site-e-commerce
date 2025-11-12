@@ -13,7 +13,7 @@ const MyOrder = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("http://localhost:5000/api/v2/", {
+        const res = await axios.get("https://site-e-commerce-1backend.onrender.com/api/v2/", {
           headers: { Authorization: `Bearer ${token}` },
         });
 
