@@ -43,6 +43,12 @@ app.use("/api/v2", orderRoutes);
 
 // 🔹 Fichiers statiques
 app.use('/uploads', express.static('uploads'));
+const __dirname1 = path.resolve();
+app.use(express.static(path.join(__dirname1, "/frontend/build")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname1, "/frontend/build", "index.html"));
+});
 
 // 🔹 Démarrage du serveur
 const PORT = process.env.PORT || 5000;

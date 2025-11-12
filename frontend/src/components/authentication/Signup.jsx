@@ -27,7 +27,7 @@ const Signup = () => {
     console.log("Formulaire soumis :", form);
 
     try {
-      const response = await axios.post("https://backend-service.onrender.com/api/v0/signup",
+      const response = await axios.post("https://site-e-commerce-1backend.onrender.com/api/v0/signup",
         form,
         {
           headers: { "Content-Type": "application/json" },
