@@ -3,7 +3,6 @@ import axios from "axios";
 import { useAuth } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   BarChart,
   Bar,
@@ -75,60 +74,42 @@ export default function Dashboard() {
 
       {/* Stat Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <Card className="bg-blue-100 border-none shadow-sm">
-          <CardHeader>
-            <CardTitle>👥 Utilisateurs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.usersCount}</p>
-          </CardContent>
-        </Card>
+        <div className="bg-blue-100 p-4 rounded-xl shadow hover:shadow-lg transition">
+          <h2 className="text-lg font-semibold mb-2">👥 Utilisateurs</h2>
+          <p className="text-2xl font-bold">{stats.usersCount}</p>
+        </div>
 
-        <Card className="bg-green-100 border-none shadow-sm">
-          <CardHeader>
-            <CardTitle>🛍️ Produits</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.productsCount}</p>
-          </CardContent>
-        </Card>
+        <div className="bg-green-100 p-4 rounded-xl shadow hover:shadow-lg transition">
+          <h2 className="text-lg font-semibold mb-2">🛍️ Produits</h2>
+          <p className="text-2xl font-bold">{stats.productsCount}</p>
+        </div>
 
-        <Card className="bg-yellow-100 border-none shadow-sm">
-          <CardHeader>
-            <CardTitle>📦 Commandes</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.ordersCount}</p>
-          </CardContent>
-        </Card>
+        <div className="bg-yellow-100 p-4 rounded-xl shadow hover:shadow-lg transition">
+          <h2 className="text-lg font-semibold mb-2">📦 Commandes</h2>
+          <p className="text-2xl font-bold">{stats.ordersCount}</p>
+        </div>
 
-        <Card className="bg-purple-100 border-none shadow-sm">
-          <CardHeader>
-            <CardTitle>💰 Revenu total</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-2xl font-bold">{stats.totalRevenue} TND</p>
-          </CardContent>
-        </Card>
+        <div className="bg-purple-100 p-4 rounded-xl shadow hover:shadow-lg transition">
+          <h2 className="text-lg font-semibold mb-2">💰 Revenu total</h2>
+          <p className="text-2xl font-bold">{stats.totalRevenue} TND</p>
+        </div>
       </div>
 
       {/* Chart Section */}
-      <Card className="p-4 shadow-lg rounded-2xl">
-        <CardHeader>
-          <CardTitle className="text-xl font-semibold">📊 Statistiques globales</CardTitle>
-        </CardHeader>
-        <CardContent className="h-72">
+      <div className="p-4 bg-white rounded-2xl shadow-lg">
+        <h2 className="text-xl font-semibold mb-4">📊 Statistiques globales</h2>
+        <div className="h-72">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={chartData}>
+            <BarChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
               <CartesianGrid strokeDasharray="3 3" />
               <XAxis dataKey="name" />
               <YAxis />
               <Tooltip />
-              <Bar dataKey="value" barSize={50} />
+              <Bar dataKey="value" fill="#3b82f6" barSize={50} />
             </BarChart>
           </ResponsiveContainer>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
