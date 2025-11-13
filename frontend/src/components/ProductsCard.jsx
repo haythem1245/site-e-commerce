@@ -3,14 +3,14 @@ import { useNavigate, useLocation } from "react-router-dom";
 import { getData } from "../context/DataContext";
 import { useCart } from "../context/CartContext";
 import { toast } from "react-hot-toast";
-
+import { useAuth } from "../context/AuthProvider";
 const Productscard = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { data, fetchAllProducts, categoryOnlyData } = getData();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const { addToCart } = useCart();
-
+  const {user}= useAuth();
   // Charger les produits
   useEffect(() => {
     fetchAllProducts();
@@ -166,9 +166,8 @@ const Productscard = () => {
                       <p className="text-gray-600 dark:text-gray-400 text-sm mb-4 line-clamp-2">
                         {product.description || "Aucune description disponible"}
                       </p>
-
                       <button
-                        onClick={() => handleAddToCart(product)}
+                        onClick={() => { if (!user) { navigate ('/signin')} else {handleAddToCart(product)}}}
                         className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-lg font-semibold transition"
                       >
                         Ajouter au panier
