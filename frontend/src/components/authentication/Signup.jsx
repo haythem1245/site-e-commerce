@@ -9,8 +9,6 @@ const Signup = () => {
     email: "",
     password: "",
     name: "",
-    phone: "",
-    role:"",
   });
  
  
@@ -36,7 +34,7 @@ const Signup = () => {
 
       console.log("✅ Inscription réussie :", response.data);
       toast.success("Compte créé avec succès !");
-      setForm({ email: "", password: "", name: "", phone: "",role:"" });
+      setForm({ email: "", password: "", name: "" });
        // ✅ Rediriger vers la page de connexion après un court délai
       setTimeout(() => navigate("/signin"), 1500);
     
@@ -114,38 +112,6 @@ const Signup = () => {
               placeholder="••••••••"
               required
               className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-
-        
-
-          {/* Phone */}
-          <div>
-            <label className="block mb-1 text-sm font-semibold text-gray-700">
-              Téléphone
-            </label>
-            <input
-              type="tel"
-              name="phone"
-              value={form.phone}
-              onChange={handleChange}
-              placeholder="+216 99 999 999"
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
-            />
-          </div>
-            <div>
-            <label className="block mb-1 text-sm font-semibold text-gray-700">
-              Role
-            </label>
-            <input
-              type="text"
-              name="role"
-              value={form.role}
-              onChange={handleChange}
-              placeholder="Votre role "
-              required
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition duration-200"
             />
           </div>
 
