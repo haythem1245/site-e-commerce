@@ -122,6 +122,12 @@ const Navbar = () => {
                     <Link to="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
                       <User className="h-4 w-4" /> Profil
                     </Link>
+
+                    {/* Lien vers les commandes */}
+                    <Link to="/orders" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
+                      <ShoppingCart className="h-4 w-4" /> Commandes
+                    </Link>
+
                     <button
                       onClick={handleLogout}
                       className="flex items-center gap-2 px-4 py-2 w-full text-left hover:bg-blue-50 transition"
@@ -171,9 +177,12 @@ const Navbar = () => {
           <Link to="/contact" className="block hover:text-blue-600 transition">Contact</Link>
 
           {user ? (
-            <button onClick={handleLogout} className="block text-left w-full hover:text-blue-600 transition">
-              Déconnexion
-            </button>
+            <>
+              <Link to="/orders" className="block hover:text-blue-600 transition">Commandes</Link>
+              <button onClick={handleLogout} className="block text-left w-full hover:text-blue-600 transition">
+                Déconnexion
+              </button>
+            </>
           ) : (
             <>
               <Link to="/signin" className="block hover:text-blue-600 transition">Login</Link>

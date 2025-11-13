@@ -13,11 +13,11 @@ const MyOrder = () => {
         const token = localStorage.getItem("token");
         if (!token) return;
 
-        const res = await axios.get("https://site-e-commerce-1backend.onrender.com/api/v2/", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const res = await axios.get(
+          "https://site-e-commerce-1backend.onrender.com/api/v2/orders",
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
 
-        console.log(res.data.orders);
         setOrders(res.data.orders || []);
       } catch (err) {
         console.error(
@@ -32,35 +32,54 @@ const MyOrder = () => {
     if (user) fetchOrders();
   }, [user]);
 
-  if (loading) return <p className="text-center">Chargement...</p>;
+  if (loading)
+    return (
+      <p className="text-center text-gray-500 text-lg mt-10">Chargement...</p>
+    );
 
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-semibold mb-4">Mes Commandes</h2>
+    <div className="p-6 max-w-6xl mx-auto">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800">Mes Commandes</h2>
 
       {orders.length === 0 ? (
-        <p>Aucune commande trouvée.</p>
+        <p className="text-center text-gray-500 text-lg mt-10">
+          Aucune commande trouvée.
+        </p>
       ) : (
-        <div className="grid gap-4">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
           {orders.map((order) => (
             <div
               key={order._id}
-              className="p-4 border rounded-lg shadow-sm bg-white"
+              className="p-6 border rounded-xl shadow hover:shadow-lg transition-shadow bg-white"
             >
-              <h3 className="text-lg font-medium">Commande #{order._id}</h3>
-              <p>Date : {new Date(order.createdAt).toLocaleString()}</p>
-              <p>Total : {order.totalPrice} TND</p>
-              <p>Méthode de paiement : {order.paymentMethod}</p>
+              <div className="flex justify-between items-center mb-3">
+                <h3 className="text-lg font-semibold text-gray-700">
+                  Commande #{order._id.slice(-6).toUpperCase()}
+                </h3>
+                <span className="text-sm text-gray-500">
+                  {new Date(order.createdAt).toLocaleDateString()}
+                </span>
+              </div>
 
-              <ul className="list-disc ml-6 mt-2">
+              <p className="text-gray-600">
+                Total : <span className="font-medium">{order.totalPrice} TND</span>
+              </p>
+              <p className="text-gray-600">
+                Méthode de paiement :{" "}
+                <span className="font-medium">{order.paymentMethod}</span>
+              </p>
+
+              <h4 className="mt-4 font-semibold text-gray-700">Articles :</h4>
+              <ul className="mt-2 list-disc ml-5 text-gray-600 space-y-1">
                 {order.orderItems?.length > 0 ? (
                   order.orderItems.map((item) => (
                     <li key={item._id || item.product}>
-                      {item.name} × {item.quantity} — {item.price} TND
+                      <span className="font-medium">{item.name}</span> × {item.quantity} —{" "}
+                      <span className="text-green-600">{item.price} TND</span>
                     </li>
                   ))
                 ) : (
-                  <p className="text-sm text-gray-500 mt-2">
+                  <p className="text-sm text-gray-400 mt-2">
                     Aucun article dans cette commande.
                   </p>
                 )}
