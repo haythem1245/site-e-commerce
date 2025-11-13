@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
+import { useAuth } from "../context/AuthProvider";
 
 const SingleProduct = () => {
   const { id } = useParams();
@@ -10,6 +11,7 @@ const SingleProduct = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const { addToCart } = useCart();
+  const {user} = useAuth();
 
   // Charger le produit depuis le backend
   useEffect(() => {
@@ -61,9 +63,10 @@ const SingleProduct = () => {
   const hasDiscount = totalDiscount > 0 && finalPrice < originalPrice;
 
   // 🛒 Fonction pour ajouter au panier
-  const handleAddToCart = () => {
+  const handleAddToCart = () => { if (!user){navigate('/signin')}else{
     addToCart({ ...product, id: product._id });
     alert(`${product.name} a été ajouté au panier 🛒`);
+  }
   };
 
   return (
