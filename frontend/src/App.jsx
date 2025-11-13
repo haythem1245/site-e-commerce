@@ -48,7 +48,7 @@ function App() {
       <Route path='/signin' element={<Login/>}> </Route>  
       <Route path="/" element={<Navigate to="/Products" />} />
         <Route path='/Products' element={<ProtectedRoute><Boutique/></ProtectedRoute>}> </Route>
-        <Route path="/Products/:id" element={<ProtectedRoute><SinglProduct/></ProtectedRoute>} /> 
+        <Route path="/products/:id" element={<ProtectedRoute><SinglProduct/></ProtectedRoute>} /> 
          <Route path='/cart' element={<ProtectedRoute><Cart/></ProtectedRoute>}> </Route>
          <Route path='/contact' element={<Contact/>}></Route>
          <Route path="/*" element={<NotFound/>} />
