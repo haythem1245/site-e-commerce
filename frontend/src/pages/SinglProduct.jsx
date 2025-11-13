@@ -16,7 +16,7 @@ const SingleProduct = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`https://site-e-commerce-1backend.onrender.com/v1/product/${id}`);
+        const res = await axios.get(`https://site-e-commerce-1backend.onrender.com/api/v1/product/${id}`);
         const productData = res.data.product ? res.data.product : res.data;
         setProduct(productData);
         setError(null);
