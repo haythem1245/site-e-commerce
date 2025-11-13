@@ -23,6 +23,7 @@
     "react-slick": "^0.31.0",
     "react-toastify": "^11.0.5",
     "recharts": "^3.4.1",
+    "shadcn-ui": "^0.9.5",
     "slick-carousel": "^1.8.1",
     "tailwindcss": "^4.1.13"
   },
