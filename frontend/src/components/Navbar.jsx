@@ -1,6 +1,14 @@
 import { useState, useRef } from "react";
 import logo from "../assets/Shopman.png";
-import { ShoppingCart, User, Search, LogIn, UserPlus, LogOut } from "lucide-react";
+import {
+  ShoppingCart,
+  User,
+  Search,
+  LogIn,
+  UserPlus,
+  LogOut,
+  ListOrdered
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { useAuth } from "../context/AuthProvider";
@@ -58,6 +66,7 @@ const Navbar = () => {
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50 transition-all">
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-3 flex items-center justify-between">
+
         {/* Logo */}
         <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="ShopMan" className="h-10 w-auto" />
@@ -70,13 +79,13 @@ const Navbar = () => {
           <Link to="/contact" className="hover:text-blue-600 transition-colors">Contact</Link>
         </div>
 
-        {/* Icons & Search */}
+        {/* Icons */}
         <div className="flex items-center gap-4">
-          {/* Search Button */}
+
+          {/* Search */}
           <button
-            onClick={() => setShowSearchBar(prev => !prev)}
+            onClick={() => setShowSearchBar((prev) => !prev)}
             className="hidden md:flex p-2 rounded hover:bg-blue-50 transition"
-            title="Rechercher"
           >
             <Search className="h-5 w-5 text-gray-700" />
           </button>
@@ -100,7 +109,11 @@ const Navbar = () => {
           >
             <button className="flex items-center gap-2 px-3 py-2 rounded hover:bg-blue-50 transition">
               {user ? (
-                <img src={user?.image || "/default-avatar.png"} alt="avatar" className="h-8 w-8 rounded-full border" />
+                <img
+                  src={user?.image || "/default-avatar.png"}
+                  alt="avatar"
+                  className="h-8 w-8 rounded-full border"
+                />
               ) : (
                 <User className="h-5 w-5 text-gray-700" />
               )}
@@ -113,19 +126,23 @@ const Navbar = () => {
                     <Link to="/signin" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
                       <LogIn className="h-4 w-4" /> Login
                     </Link>
+
                     <Link to="/signup" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
                       <UserPlus className="h-4 w-4" /> Signup
                     </Link>
                   </>
                 ) : (
                   <>
-                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
-                      <User className="h-4 w-4" /> Profil
+                    {/* Mes commandes */}
+                    <Link
+                      to="/myorders"
+                      className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition"
+                    >
+                      <ListOrdered className="h-4 w-4" /> Mes commandes
                     </Link>
 
-                    {/* Lien vers les commandes */}
-                    <Link to="/orders" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
-                      <ShoppingCart className="h-4 w-4" /> Commandes
+                    <Link to="/profile" className="flex items-center gap-2 px-4 py-2 hover:bg-blue-50 transition">
+                      <User className="h-4 w-4" /> Profil
                     </Link>
 
                     <button
@@ -141,18 +158,16 @@ const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-3">
-            <button
-              onClick={() => setIsMobileMenuOpen(prev => !prev)}
-              className="p-1 hover:text-blue-600 transition"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                strokeWidth="2" stroke="currentColor" className="w-6 h-6">
-                <path strokeLinecap="round" strokeLinejoin="round"
-                  d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
-          </div>
+          <button
+            onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+            className="p-1 md:hidden hover:text-blue-600 transition"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+              strokeWidth="2" stroke="currentColor" className="w-6 h-6">
+              <path strokeLinecap="round" strokeLinejoin="round"
+                d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -178,8 +193,12 @@ const Navbar = () => {
 
           {user ? (
             <>
-              <Link to="/orders" className="block hover:text-blue-600 transition">Commandes</Link>
-              <button onClick={handleLogout} className="block text-left w-full hover:text-blue-600 transition">
+              <Link to="/myorders" className="block hover:text-blue-600 transition">Mes commandes</Link>
+
+              <button
+                onClick={handleLogout}
+                className="block text-left w-full hover:text-blue-600 transition"
+              >
                 Déconnexion
               </button>
             </>
