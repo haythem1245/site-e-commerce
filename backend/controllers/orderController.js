@@ -102,5 +102,34 @@ const updateOrderStatus = async (req, res) => {
     res.status(500).json({ message: "Erreur serveur", error: error.message });
   }
 };
+const deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
 
-module.exports = { createOrder, getMyOrders,getAllOrders,updateOrderStatus };
+    if (!order) {
+      return res.status(404).json({ message: "Commande non trouvée" });
+    }
+
+    // Vérifie que l'utilisateur est propriétaire OU admin
+    if (order.user.toString() !== req.user._id.toString() && req.user.role !== "admin") {
+      return res.status(403).json({ message: "Accès refusé – vous ne pouvez pas supprimer cette commande" });
+    }
+
+    await order.deleteOne();
+
+    return res.status(200).json({ 
+      success: true,
+      message: "Commande supprimée avec succès"
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Erreur serveur lors de la suppression de commande",
+      error: error.message,
+    });
+  }
+};
+
+
+module.exports = { createOrder, getMyOrders,getAllOrders,updateOrderStatus,deleteOrder };
