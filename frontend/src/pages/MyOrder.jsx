@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthProvider";
 import { toast, ToastContainer } from "react-toastify";
@@ -9,7 +9,6 @@ const MyOrder = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Récupérer les commandes
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -17,13 +16,13 @@ const MyOrder = () => {
         if (!token) return;
 
         const res = await axios.get(
-          "https://site-e-commerce-1backend.onrender.com/api/v2/",
+          "https://site-e-commerce-1backend.onrender.com/api/v2/orders",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
         setOrders(res.data.orders || []);
       } catch (err) {
-        console.error("Erreur récupération commandes :", err);
+        console.error(err);
         toast.error("Impossible de récupérer vos commandes.");
       } finally {
         setLoading(false);
@@ -33,23 +32,16 @@ const MyOrder = () => {
     if (user) fetchOrders();
   }, [user]);
 
-  // Supprimer une commande
-  const handleDelete = async (id) => {
-    if (!window.confirm("Voulez-vous vraiment supprimer cette commande ?")) return;
-
-    try {
-      const token = localStorage.getItem("token");
-
-      await axios.delete(
-        `https://site-e-commerce-1backend.onrender.com/api/v2/${id}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-
-      setOrders((prev) => prev.filter((order) => order._id !== id));
-      toast.success("Commande supprimée avec succès !");
-    } catch (err) {
-      console.error("Erreur suppression commande :", err);
-      toast.error("Impossible de supprimer cette commande.");
+  const getStatusStyle = (status) => {
+    switch (status) {
+      case "Livrée":
+        return "bg-green-100 text-green-700 px-2 py-1 rounded";
+      case "En cours":
+        return "bg-yellow-100 text-yellow-800 px-2 py-1 rounded";
+      case "Annulée":
+        return "bg-red-100 text-red-700 px-2 py-1 rounded";
+      default:
+        return "bg-gray-100 text-gray-700 px-2 py-1 rounded";
     }
   };
 
@@ -64,12 +56,11 @@ const MyOrder = () => {
         <p className="text-gray-500">Aucune commande trouvée.</p>
       ) : (
         orders.map((order) => (
-          <div
-            key={order._id}
-            className="p-4 border rounded mb-4 bg-white"
-          >
+          <div key={order._id} className="p-4 border rounded mb-4 bg-white">
             <div className="flex justify-between items-center mb-2">
-              <h3 className="font-semibold">Commande #{order._id.slice(-6).toUpperCase()}</h3>
+              <h3 className="font-semibold">
+                Commande #{order._id.slice(-6).toUpperCase()}
+              </h3>
               <span className="text-sm text-gray-500">
                 {new Date(order.createdAt).toLocaleDateString()}
               </span>
@@ -77,6 +68,9 @@ const MyOrder = () => {
 
             <p>Total : {order.totalPrice} TND</p>
             <p>Méthode de paiement : {order.paymentMethod}</p>
+            <p>
+              Statut : <span className={getStatusStyle(order.status)}>{order.status}</span>
+            </p>
 
             <h4 className="mt-2 font-medium">Articles :</h4>
             <ul className="ml-5 list-disc">
@@ -86,13 +80,6 @@ const MyOrder = () => {
                 </li>
               ))}
             </ul>
-
-            <button
-              onClick={() => handleDelete(order._id)}
-              className="mt-3 px-3 py-1 bg-red-500 text-white rounded"
-            >
-              Supprimer
-            </button>
           </div>
         ))
       )}
