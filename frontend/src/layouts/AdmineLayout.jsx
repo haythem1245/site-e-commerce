@@ -1,6 +1,6 @@
 import { Outlet, NavLink } from "react-router-dom";
 import { Home, ShoppingCart, Users, Package, User, LogOut } from "lucide-react";
-import { useAuth } from "../../context/AuthProvider";
+import { useAuth } from "../context/AuthProvider";
 
 const AdminLayout = () => {
   const { logout, user } = useAuth();
