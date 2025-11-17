@@ -5,6 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
+  const [newProducts, setNewProducts] = useState([]);
   const [formData, setFormData] = useState({
     name: "",
     price: "",
@@ -20,20 +21,22 @@ const Products = () => {
   });
   const [editId, setEditId] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [preview, setPreview] = useState(null);
   const token = localStorage.getItem("token");
 
-  // ✅ Charger les produits
+  // Charger produits
   const fetchProducts = async () => {
     try {
       const res = await axios.get("https://site-e-commerce-1backend.onrender.com/api/v1/products");
       setProducts(res.data);
+      setNewProducts(res.data.filter(p => p.isNew));
     } catch (err) {
-      console.error("Erreur de chargement :", err);
+      console.error(err);
       toast.error("Erreur lors du chargement des produits");
     }
   };
 
-  // ✅ Ouvrir modal
+  // Ouvrir modal
   const openModal = (product = null) => {
     if (product) {
       setFormData({
@@ -44,11 +47,12 @@ const Products = () => {
         category: product.category,
         stock: product.stock,
         featured: product.featured,
-        isNew: product.isNew || false,
+        isNew: product.isNew,
         sold: product.sold || 0,
         newSold: product.newSold || 0,
         images: null,
       });
+      setPreview(product.images);
       setEditId(product._id);
     } else {
       setFormData({
@@ -64,6 +68,7 @@ const Products = () => {
         newSold: 0,
         images: null,
       });
+      setPreview(null);
       setEditId(null);
     }
     setShowModal(true);
@@ -84,10 +89,11 @@ const Products = () => {
       newSold: 0,
       images: null,
     });
+    setPreview(null);
     setEditId(null);
   };
 
-  // ✅ Gérer changement de champs
+  // Gérer changement champs
   const handleChange = (e) => {
     const { name, value, type, checked, files } = e.target;
     let updatedForm = { ...formData };
@@ -96,11 +102,12 @@ const Products = () => {
       updatedForm[name] = checked;
     } else if (files) {
       updatedForm[name] = files[0];
+      setPreview(URL.createObjectURL(files[0]));
     } else {
       updatedForm[name] = value;
     }
 
-    // 🔥 Calcul automatique du prix final selon la réduction
+    // Calcul automatique prix final
     if (name === "price" || name === "sold" || name === "newSold") {
       const price = parseFloat(updatedForm.price) || 0;
       const reduction = parseFloat(updatedForm.newSold || updatedForm.sold) || 0;
@@ -110,7 +117,7 @@ const Products = () => {
     setFormData(updatedForm);
   };
 
-  // ✅ Ajouter ou modifier
+  // Ajouter / Modifier produit
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -143,19 +150,23 @@ const Products = () => {
         );
         toast.success("Produit modifié avec succès !");
       } else {
-        await axios.post("https://site-e-commerce-1backend.onrender.com/api/v1/product", data, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "multipart/form-data",
-          },
-        });
+        await axios.post(
+          "https://site-e-commerce-1backend.onrender.com/api/v1/product",
+          data,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
         toast.success("Produit ajouté avec succès !");
       }
 
       closeModal();
       fetchProducts();
     } catch (err) {
-      console.error("Erreur lors de l'enregistrement :", err);
+      console.error(err);
       toast.error(err.response?.data?.message || "Erreur d’enregistrement");
     }
   };
@@ -169,7 +180,7 @@ const Products = () => {
       toast.success("Produit supprimé avec succès");
       fetchProducts();
     } catch (err) {
-      console.error("Erreur suppression :", err);
+      console.error(err);
       toast.error("Erreur lors de la suppression");
     }
   };
@@ -191,6 +202,22 @@ const Products = () => {
         </button>
       </div>
 
+      {/* Section Nouveaux produits */}
+      {newProducts.length > 0 && (
+        <div className="mb-6">
+          <h2 className="text-2xl font-semibold mb-2">✨ Nouveaux Produits</h2>
+          <div className="flex flex-wrap gap-4">
+            {newProducts.map(p => (
+              <div key={p._id} className="border p-2 rounded shadow w-40 text-center">
+                <img src={p.images} alt={p.name} className="h-24 w-full object-cover rounded" />
+                <p className="font-bold">{p.name}</p>
+                <p className="text-green-600">{p.finalPrice} TND</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Tableau produits */}
       <div className="overflow-x-auto bg-white shadow rounded-lg">
         <table className="w-full border-collapse">
@@ -203,6 +230,8 @@ const Products = () => {
               <th className="px-4 py-2">Prix Final</th>
               <th className="px-4 py-2">Catégorie</th>
               <th className="px-4 py-2">Stock</th>
+              <th className="px-4 py-2">Nouveau</th>
+              <th className="px-4 py-2">Vedette</th>
               <th className="px-4 py-2">Action</th>
             </tr>
           </thead>
@@ -217,6 +246,8 @@ const Products = () => {
                   <td className="font-bold text-green-600">{p.finalPrice} TND</td>
                   <td>{p.category}</td>
                   <td>{p.stock}</td>
+                  <td>{p.isNew ? "Oui" : "Non"}</td>
+                  <td>{p.featured ? "Oui" : "Non"}</td>
                   <td className="space-x-2">
                     <button
                       onClick={() => openModal(p)}
@@ -234,15 +265,15 @@ const Products = () => {
                 </tr>
               ))
             ) : (
-              <tr><td colSpan="8" className="py-4 text-gray-500">Aucun produit trouvé</td></tr>
+              <tr><td colSpan="10" className="py-4 text-gray-500">Aucun produit trouvé</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
-      {/* 🔥 Modal d’ajout/modif produit */}
+      {/* Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center">
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex justify-center items-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96 overflow-y-auto max-h-[90vh]">
             <h2 className="text-xl font-bold mb-4 text-gray-800">
               {editId ? "Modifier le produit" : "Ajouter un produit"}
@@ -252,11 +283,9 @@ const Products = () => {
               <input type="text" name="name" value={formData.name} onChange={handleChange} placeholder="Nom du produit" className="w-full border p-2 rounded" required />
               <textarea name="description" value={formData.description} onChange={handleChange} placeholder="Description" className="w-full border p-2 rounded" required />
               <input type="number" name="price" value={formData.price} onChange={handleChange} placeholder="Prix original" className="w-full border p-2 rounded" required />
-              
-              {/* 🔥 Réductions */}
+
               <input type="number" name="sold" value={formData.sold} onChange={handleChange} placeholder="Réduction actuelle (%)" className="w-full border p-2 rounded" />
               <input type="number" name="newSold" value={formData.newSold} onChange={handleChange} placeholder="Nouvelle réduction (%)" className="w-full border p-2 rounded" />
-
               <input type="text" name="finalPrice" value={formData.finalPrice} readOnly className="w-full border p-2 rounded bg-gray-100" placeholder="Prix final calculé" />
 
               <input type="text" name="category" value={formData.category} onChange={handleChange} placeholder="Catégorie" className="w-full border p-2 rounded" required />
@@ -270,7 +299,8 @@ const Products = () => {
                 <input type="checkbox" name="isNew" checked={formData.isNew} onChange={handleChange} />
                 <label>Nouveau produit</label>
               </div>
-              
+
+              {preview && <img src={preview} alt="preview" className="h-32 w-full object-cover rounded mt-2" />}
               <input type="file" name="images" onChange={handleChange} className="w-full border p-2 rounded" accept="image/*" />
 
               <div className="flex justify-end space-x-2 mt-4">
