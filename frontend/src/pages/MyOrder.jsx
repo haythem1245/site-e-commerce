@@ -16,7 +16,7 @@ const MyOrder = () => {
         if (!token) return;
 
         const res = await axios.get(
-          "https://site-e-commerce-1backend.onrender.com/api/v2/orders",
+          "https://site-e-commerce-1backend.onrender.com/api/v2/",
           { headers: { Authorization: `Bearer ${token}` } }
         );
 
