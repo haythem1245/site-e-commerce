@@ -55,7 +55,7 @@ function App() {
          <Route path="/profile" element={<Profile/>} />
        <Route path='/about' element={<About/>}></Route> 
       <Route path='/checkout' element={<ProtectedRoute><Checkout/></ProtectedRoute>}></Route>
-      <Route path='/orders' element={<ProtectedRoute><MyOrder/></ProtectedRoute>}></Route>
+      <Route path='//myorders' element={<ProtectedRoute><MyOrder/></ProtectedRoute>}></Route>
       </Route>
       {/* Admin routes */}
        <Route
