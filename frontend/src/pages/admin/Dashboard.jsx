@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { LogOut } from "lucide-react";
 import {
@@ -15,7 +14,6 @@ import {
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
-  const { logout, user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,16 +28,11 @@ export default function Dashboard() {
       .catch((err) => {
         console.error("Erreur stats admin :", err);
         if (err.response?.status === 401) {
-          logout();
-          navigate("/login");
         }
       });
-  }, [logout, navigate]);
+  }, [ navigate]);
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
-  };
+ 
 
   if (!stats)
     return <p className="text-center py-10 text-gray-500 animate-pulse">Chargement...</p>;
