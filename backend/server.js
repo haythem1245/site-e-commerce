@@ -24,7 +24,7 @@ cloudinary.config({
 // 🔹 Configuration CORS
 app.use(cors({
   origin: [
-    "http://localhost:5173",               // pour le développement local
+    "http://localhost:5000",               // pour le développement local
     "https://frontend-niip.onrender.com"   // pour la version déployée sur Render
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
@@ -51,7 +51,7 @@ app.get("*", (req, res) => {
 });
 
 // 🔹 Démarrage du serveur
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
 });
