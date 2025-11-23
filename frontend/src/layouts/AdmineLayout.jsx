@@ -1,12 +1,14 @@
-import { Outlet, NavLink } from "react-router-dom";
+import { Outlet, NavLink,useNavigate } from "react-router-dom";
 import { Home, ShoppingCart, Users, Package, User, LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthProvider";
+import { use } from "react";
 
 const AdminLayout = () => {
   const { logout, user } = useAuth();
-
+const navigate = useNavigate();
   const handleLogout = () => {
     logout();
+    navigate("/login");
   };
 
   const menuItems = [
@@ -55,6 +57,7 @@ const AdminLayout = () => {
         >
           <LogOut size={18} />
           Déconnexion
+          
         </button>
 
         {/* Footer */}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthProvider";
 import { LogOut } from "lucide-react";
 import {
   BarChart,
@@ -14,11 +14,11 @@ import {
 
 export default function Dashboard() {
   const [stats, setStats] = useState(null);
-  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return navigate("/login");
+    if (!token) return; // on suppose que la redirection est gérée par AdminLayout
 
     axios
       .get("https://site-e-commerce-1backend.onrender.com/api/v0/admin/stats", {
@@ -27,12 +27,9 @@ export default function Dashboard() {
       .then((res) => setStats(res.data.stats))
       .catch((err) => {
         console.error("Erreur stats admin :", err);
-        if (err.response?.status === 401) {
-        }
+        if (err.response?.status === 401) logout(); // déconnexion si token invalide
       });
-  }, [ navigate]);
-
- 
+  }, [logout]);
 
   if (!stats)
     return <p className="text-center py-10 text-gray-500 animate-pulse">Chargement...</p>;
@@ -46,10 +43,8 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-
       {/* HEADER */}
       <div className="flex items-center justify-between">
-        
         <div>
           <h1 className="text-3xl font-bold text-gray-800">Tableau de bord Admin</h1>
           {user && (
@@ -58,44 +53,26 @@ export default function Dashboard() {
             </p>
           )}
         </div>
-
-        {/* Logout button repositionné PROPREMENT */}
-        <button
-          onClick={handleLogout}
-          className="flex items-center gap-2 bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow-md transition"
-        >
-          <LogOut size={18} />
-          <span>Déconnexion</span>
-        </button>
       </div>
 
       {/* STAT CARDS */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-
-        {/* Users */}
         <div className="p-5 rounded-xl bg-white border shadow-sm hover:shadow-md transition">
           <h2 className="text-gray-700 font-semibold mb-1">👥 Utilisateurs</h2>
           <p className="text-3xl font-bold text-blue-600">{stats.usersCount}</p>
         </div>
-
-        {/* Products */}
         <div className="p-5 rounded-xl bg-white border shadow-sm hover:shadow-md transition">
           <h2 className="text-gray-700 font-semibold mb-1">🛍️ Produits</h2>
           <p className="text-3xl font-bold text-green-600">{stats.productsCount}</p>
         </div>
-
-        {/* Orders */}
         <div className="p-5 rounded-xl bg-white border shadow-sm hover:shadow-md transition">
           <h2 className="text-gray-700 font-semibold mb-1">📦 Commandes</h2>
           <p className="text-3xl font-bold text-yellow-600">{stats.ordersCount}</p>
         </div>
-
-        {/* Revenue */}
         <div className="p-5 rounded-xl bg-white border shadow-sm hover:shadow-md transition">
           <h2 className="text-gray-700 font-semibold mb-1">💰 Revenu total</h2>
           <p className="text-3xl font-bold text-purple-600">{stats.totalRevenue} TND</p>
         </div>
-
       </div>
 
       {/* CHART */}
@@ -113,7 +90,6 @@ export default function Dashboard() {
           </ResponsiveContainer>
         </div>
       </div>
-
     </div>
   );
 }
