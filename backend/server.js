@@ -24,8 +24,8 @@ cloudinary.config({
 // 🔹 Configuration CORS
 app.use(cors({
   origin: [
-    "http://localhost:5000",               // pour le développement local
-    "https://frontend-niip.onrender.com"   // pour la version déployée sur Render
+    "http://localhost:5173/",
+    "https://frontend-niip.onrender.com"
   ],
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
@@ -35,23 +35,21 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 🔹 Routes
+// 🔹 Routes API
 app.use("/api/v0/admin", adminRoutes);
 app.use("/api/v0", userRoutes);
 app.use("/api/v1", productRoutes);
 app.use("/api/v2", orderRoutes);
 
-// 🔹 Fichiers statiques
+// 🔹 Fichiers statiques (uniquement upload)
 app.use('/uploads', express.static('uploads'));
-const __dirname1 = path.resolve();
-app.use(express.static(path.join(__dirname1, "/frontend/build")));
 
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname1, "/frontend/build", "index.html"));
-});
+// ❗ SUPPRIMÉ :
+// app.use(express.static(path.join(__dirname1, "/frontend/build")));
+// app.get("/*", ...);
 
 // 🔹 Démarrage du serveur
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
 });
