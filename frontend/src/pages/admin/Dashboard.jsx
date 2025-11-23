@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useAuth } from "../context/AuthProvider";
-import { LogOut } from "lucide-react";
+import { useAuth } from "../../context/AuthProvider";
+
 import {
   BarChart,
   Bar,
