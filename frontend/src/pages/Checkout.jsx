@@ -83,7 +83,7 @@ const Checkout = () => {
         paymentMethod: "Credit Card",
       });
 
-      setTimeout(() => navigate("/orders"), 1500);
+      setTimeout(() => navigate("/myorders"), 1500);
     } catch (error) {
       console.error(error);
       if (error.response?.status === 401) {
